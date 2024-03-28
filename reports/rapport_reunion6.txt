@@ -1,0 +1,31 @@
+Compte rendu de la reunion n°6 du 14/02/2024
+
+Informations et explications:
+
+- Pour pouvoir modifier l'etat terminal dans le labyrinthe il nous faut utiliser la bibliotheque mazemdp et non plus tabularmazemdp. Penser à deinstaller bbrl et le reinstaller pour prendre en compte ce changement. Une fois qu'on travaille avec mazemdp il nous faut modifier le code sur la partie terminal states en remplaçant [nb_states-1] par une liste qui contient uniquement l'etat terminal que l'on souhaite
+
+- nous n'utilisons pas directement la successor representation seule pour faire du reinforcement learning mais comme un outil à utiliser dans nos fonctions
+
+- le code de l'article de mattar et daw est disponible sur matlab
+
+- la notion d'horizon infini correspond en fait à un episode unique qui dure une "infinie" de temps
+
+- le code pour la successor representation dont nous pouvons nous inspirer se trouve dans le github des étudiants de l'année derniere dans le fichier simulation.py
+
+Dans le code de Successor Representation, la fonction update_R n'est pas nécessaire, il vaut mieux consulter les codes de Mattar et Daw et sur le github de l'an dernier au lieu de construire nous meme un propre algorithme. 
+
+- Pour la matrice M, on va apprendre M avant de stocker les probabilités.
+
+A faire:
+
+- utiliser un logger pour reproduire la figure de l'article de Peng and Williams 
+
+- implementer focused dyna avec l'algorithme de Dijkstra
+
+- implementer la successor representation
+
+- modifier le code de random dyna et largest first dyna en modifiant la formule de mise à jour de QEstimation. Dans la formule multiplier le terme qui contient s(t+1) par (1-terminated) ainsi cela regle l'incoherence d'utiliser l'etat suivant l'etat terminal car il n'existe pas
+
+- simplifier en decoupant en plusieurs plus petites fonctions largest 1st Dyna et Random Dyna
+
+-penser très longtemps à l'avance l'exposé final sous forme de tranparents

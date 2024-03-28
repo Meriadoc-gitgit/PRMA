@@ -1,0 +1,31 @@
+Ordre du Jour de la réunion n°5 du 07/02/2024
+
+Ce qui a été fait:
+
+- Lecture de l'article de Samuel Gershman sur la Successor Representation
+- Mise au propre des variables dans le code
+- implementation de boucle qui termine au bout de d'un certain nombre d'épisode
+- Queue Dyna Priority Based on Prediction Difference Magnitude fonctionne
+- relecture de l'article de Peng and Williams, compréhension de la partie 6.1.2
+- implementation de random Dyna
+- lecture de l'article de Peter Dayan
+
+
+
+
+Questions: 
+
+1 lorsqu'on génère un labyrinthe il semble qu'il soit tout le temps déterministe, dans l'article de Peng and Williams il est spécifié que la prédiction avec la différence de magnitude peut s'appliquer dans des environnements stochastiques. Comment générer un environnement stochastique?
+
+2 dans l'article de Gershman, l'auteur évoque des fonctions d'estimations linéaire et non linéaire qu'est ce que cela signifie, quelles sont les différences et les impacts? (même questions avec les architectures linéaire et non linéaire qui sont aussi abordées dans le même article)?
+
+3 que signifie que TD learning avec la successor representation est à valeur vectorielle?
+
+4 comment implémenter le code nécessaire pour visualiser la Figure 10 de l'article de Peng and Williams?
+
+5 pour l'algorithme inspiré de la partie 6.1.2 de l'article de Peng and Williams comment devont nous définir d(x) (deux manieres dans l'article sont proposées), serait il possible de développer sur les fonctionnalités de la bibliothèque fournie: mazemdp?
+
+6 dans random Dyna est ce que la seule modification à faire par rapport à Queue Dyna avec la différence de magnitude est la façon dont on ajoute les éléments ou non à PQueue où y a t il d'autres modification à apporter notamment dans le traitement des échantillons dans PQueue?
+ 
+7 Dans l'article de Peter Dayan quelle est l'idée derrière la formule (1), comment interpréter ce qu'est la matrice de Markov élevée à une certaine puissance?
+

@@ -1,0 +1,14 @@
+Ordre du Jour de la reunion n°7 du 28/02/2024
+
+Ce qui a été fait:
+- implementation de la successor representation
+- problème avec la prise en compte des états s(t+1) dans les formules de mises à jour :réglé
+- décomposition des fonctions en plusieurs fonctions
+- réorganisation du projet sous forme de classes
+- modification de la bibliothèque pour modifier l'état final (encore quelques problème qui seront normalement réglés d'ici la réunion
+
+
+Sujet/questions:
+- Serait-il possible de nous donner plus d'outils/informations pour mieux comprendre concrètement les formules utilisées?
+- Pourrions nous passer du temps à regarder plus en détails notre code pour vérifier qu'il n'y ai pas d'importantes incohérences que nous n'aurions pas comprises?
+

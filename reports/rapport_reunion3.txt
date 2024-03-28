@@ -1,0 +1,40 @@
+CR Réunion 2 
+Remarque :
+- il faut concentrer plusieurs sur l’article de Peng et Williams
+- La stratégie optimal est plutôt de lire et discuter ensemble 
+- Les questions dans l’ordre du jour doivent concentrer sur ce qu’on est en train de faire et ce que l’on vise à faire
+
+Algo e Q-learning 
+- question : est-ce que l’action a est choisi basant sur la politique ou d’autres moyens ? 
+- Algo : construit un Q tablé on a ensemble des états et d’actions’ il faut estimer la valeur de l’action, l’agent va regarder et choisit l’action ayant la plus grande valeur. Quand on utilise epsilon greedy c’est l’agent choisit dans la q table le max avec une proba de 1-epsilon et de temps en temps avec une proba epsilon il choisit justement pas le max mais un truc autre aleatoire pour faire de l’exploration.
+- L’agent va remplir le Q table au fur à mesure, on affine les résultats pour le tableau
+- (Pas grand chose à voir dans Tom Schaul) 
+- pas vraiment de politique distinct dans la Q function car la politique c'est la q function mais elle est update par la politique qui est elle même
+- e(s) pas mal car on stock dans la case si elle a ete visité y'a longtemps donc dans le cas infini ca marche on a pas besoin d'une memoire infini
+- L'environnement est souvent stochastique mais il nous faut coder pour le milieu deterministe et stochastique
+
+
+- Replay buffer: stocker dans une mémoire, taille fixé. Je tire une transition aléatoirement dans le replay buffer et je mets à jour. 
+- Reproduire les 3 dyna indépendamment dans peng et williams
+
+- Paradoxe : approche dyna : construire un modele et agent travaille dans le modele sans expérience réel. 
+
+- Si on a un modèle, on peut imaginer des transitions jamais faire. Si il y a un tabulaire avec des transitions que l’on a fait. 
+
+- La généralisation : capacité à prédire la réponse pour ce qu’on a pas vu avant. Neuro a la généralisation. 
+
+- L'idée pour la semaine prochaine c'est de retomber sur la figure 8 de l'article de Peng et Williams
+- utiliser simple maze pour generer le labyrinthe
+
+Question:
+
+Y'a t il une generalisation dans l'article de Peng and Williams?
+Est ce que dans Peng and Williams les deux façons de tirer dans le replay buffer sont à un moment combiné?
+
+A faire:
+
+coder labyrinthe et algo de q learning
+Integrer random replay buffer et la partie avec erreur temporelle
+bien comprendre start state  value (forward replay)
+lire dayan 1993
+chercher article sur la successor rpz (medium, reddit) les articles avec une approche plus biologie sont plus simples

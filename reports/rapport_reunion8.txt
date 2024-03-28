@@ -1,0 +1,23 @@
+Compte rendu de la reunion n°8 du 06/03/2024
+
+- Pour éviter les boucles dans la successor représentation, il vaut mieux fixer un nombre d'épisodes pour savoir au bout quand on va s'en sortir, et on pourrait ajouter une étape d'exploration que ce soit en bootstrap au début avec random dyna ou autre. 
+  La successor représentation est apprise et évolue en même temps que sa politique
+- On a apprit à faire la différence entre épisode (qui débute avec l'agent dans un état initial et termine avec la découverte d'un état terminal 
+  ou quand le programme et interrompu au bout d'un nombre de pas de temps prédéfini)et pas de temps.
+- l'idée finale est de faire la combinaison du gain et du need comme Matar et Daw.
+
+Code : 
+-Il faudrait corriger les erreurs d'orthographe en français et renommer (entre autres) la classe main a "prioritized replay agent" 
+- En POO il faut réfléchir aux comportements et propriétés naturelles des classes. Il faut découper le code en pensant à la logique de ce qu'on fait.
+- Problème avec les paramètres appelées dans getaction 
+- il faut revoir une fonction erreur de différence temporelle qui calcule la valeur du delta dans pour algorithmes
+- update q table à renommer. 
+- get_action fausse inverse paramètres pour epsilon greedy et softmax
+- gain correspond au backward et need au forward
+- ajouter une parametre dans largest first et random qui spécifie le nombre de planification à faire pour chaque pas dans le monde réel effectué
+
+A faire:
+- Pleins de bugs à résoudre. 
+- simplifier get_policy_from_q
+- Rédiger un rapport de 2 pages pour Lundi avec contexte, objectif et implémentation.
+- A*

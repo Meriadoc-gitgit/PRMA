@@ -1,0 +1,21 @@
+Ordre du jour de la réunion n° 8 du 6/03/2024
+
+Ce qui a été fait:
+
+- variables renommées
+- wrapper pour modifier la reward
+- implementation du labyrinthe n°5
+- obtention de la figure numero 8 de l'article de Peng and Williams (encore en cours)
+
+
+Questions:
+
+-quand on reproduit le labyrinthe de la figure 5 de l'article de Peng and Williams, le goal est sur 4 cases en forme de carré or si on arrive sur un etat terminal on considère qu'il n'y a pas d'état successeur, et lorsqu'on arrive sur un état terminal on retourne automatiquement à la case départ. en regardant la figure on se rends donc compte que 2 cases goal (celles situé en "haut" du carré goal) ne seront jamais atteignables quel est donc leur interet ?
+
+- pour réussir à obtenir le graphe de l'article qui montre le nombre de step_to_goal en fonction du nombre de backup nous avions parlé de l'utilisation de loggers. Leur utilisation dans ce cas là ne nous est pas très clair donc nous partons plus vers une solution avec l'utilisation d'un wrapper et de matplotlib est ce que cela vous semble envisageable? 
+
+- Dans le SR, pour construire la matrice de transition, est-ce qu’on a le droit à une phase d’apprentissage ? Et si oui, aurons-nous le droit d’exécuter l’algo une fois avant (ce qui correspond aux fonctions self.execute() dans le fichier Algorithme.py) ?
+
+- Si cela ne vous dérange pas, pouvez-vous nous expliquer un peu plus de la SR ? (Duong trouve un peu perdu en ré-écrivant sans utiliser la matrice de transition et le planning)
+
+- Si on applique np.argmax sur la liste que le SR retourne, est-ce qu’on doit forcément obtenir l’état qui est juste à côté de l’état actuel ? Car si d’après sa définition, cela ne garantit pas ce retour, alors est-ce normal que l’état retourné ne soit pas directement à côté de celui actuel ?

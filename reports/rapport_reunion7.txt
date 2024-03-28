@@ -1,0 +1,21 @@
+Rapport de la réunion n°7 du 28/02/2024
+
+Informations et explications:
+
+- Focused par Peng and Williams triche en quelque sorte, pour implementer d(x) on fait en fait la supposition implicite que l'on a accès à la transition matrice (ce qui va à l'encontre du principe de RL)
+
+- il pourrait être interessant pour implémenter Focused Dyna sans "triche" d'utiliser la successor representation pour obtenir la probabilité d'arriver dans un état et de plus stocker la distance entre un état l'état de départ et l'état où l'on se trouve. En liant ces deux informations il serait peut être possible de pouvoir ainsi implémenter focused Dyna dans un milieu stochastique en n'utilisant plus la transition matrice. (A voir si les résultats/ performances sont interessant ou non)
+
+- réflexion autour du sens d'ajouter ou non les prédecesseurs à la Queue dans la phase de update_model de Focused Dyna
+
+- Focused Dyna comme il est décrit dans l'article de Peng and Williams n'est pas très cohérent avec le principe de RL la Successor Representation même si nous n'avons pas encore les résultats est meilleure dans le sens où elle fait réellement du RL (ne suppose pas une connaissance de la matrice de transition avant le début de l'algorithme)
+
+A faire:
+
+- renommer nos variables (x= state, y=next_state... récupérer les noms des variables de mazemdp)
+- poursuivre le travail de décomposition des fonctions en sous fonctions
+- faire les logs pour obtenir la figure
+- envoyer un mail détaillé des problèmes rencontré en modifiant la bibliothèque fournie (lorsque l'on tente de pouvoir modifier le terminal state d'un maze)
+- implémenter a* (nous avons le droit d'utiliser la matrice de transition)
+- tester avec et sans ajout des prédecesseurs dans la Queue pour l'algorithme focused Dyna
+- réussir à intégrer le repo SimpleMazeMdp dans notre projet, penser à donc retirer maze mdp des paquets installés avec pip

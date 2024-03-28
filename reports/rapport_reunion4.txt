@@ -1,0 +1,41 @@
+Compte Rendu Réunion 4 31/01/2024
+
+Informations et explications:
+
+	- Q Dyna n'est pas de la programmation dynamique mais de de reinforcement learning
+
+	- En programmation dynamique on connaît la reward fonction et la transition fonction cela permet de calculer de manière précise la Q table.
+
+	- Par opposition  à l'apprentissage par renforcement où les fonctions de recompense et transition  sont inconnues ce qui implique que l'on créer une estimation de la Q table (Q chapeau), les mises à jour sont donc très locales
+
+	- En programmation dynamique il n'y a pas d'agent car nous sommes en connaissances des fonctions donc il n'y a pas d'interet à se déplacer concretement sur le terrain
+
+	- Initialisation de la position de l'agent: 
+		- si l'agent apparait uniquement sur une même case à chaque épisode cela lui complique la tâche car il doit apprendre à sortir du chemin optimal qu'il se créer pour explorer
+		- si l'agent apparait à differentes positions à chaque fois cela lui simplifie la tâche car il explore forcèment et peut apprendre juste en apparaissant sur une case intéressante pour lui
+
+	- Dans notre algorithme il n'est pas possible de s'arrêter avec un fonctionnement de convergence qu'on peut retrouver dans certaines fonctions des notebooks. Il nous faut opter vers une solution avec, en paramètres un nombre fini d'episode, ainsi notre boucle s'arrête au bout d'un certain temps
+
+	- Par rapport à soft max: (cf slides de cours) 
+		- plus la temperature choisie est élevée (tends vers l'infini par exemple) plus les actions sont choisies aléatoirement
+		- plus la temperature est basse plus la probabilité de choisir des états/actions ayant une grande Q valeurs est élevée
+
+	- dans l'algorithme de Peng and Williams Q chapeau correspond bien au world modele (dans les détails le world model correspond en réalite plus à une approximation de la fonction de transition)
+
+	- Dans l'algorithme de Peng and Williams nous travaillons sur une approximation de la Q table car nous n'avons en fait pas le choix, ne connaissant pas la fonctions de transition
+
+	- Dans q_learning_soft : q_min n'a pas vraiment d'intêret pour nous, il est fixé à une matrice de 0
+
+	- Dans la priorisation avec la différence de magnitude on travaille avec les transitions ayant la plus grande erreur pour que l'agent apprenne de manière plus efficace
+
+
+
+A faire:
+	- mettre de manière systématique les avancées du code sur github
+	- renommer proprement les variables dans notre code
+	- implémenter la fin de boucle dans notre algorithme
+	- experimenter avec nos variables pour mieux comprendre leur importance
+	- revoir les vidéos de cours sur le Bellman backup et l'erreur de différence temporelle
+	- continuer de travailler sur la start state priorisation
+	- essayer de trouver le rapport entre start state et la successor representation
+	- Se renseigner sur la successor representation notamment en lisant l'article de Sam Gershman : "The successor representation: its computational logic and neural substrates"

@@ -1,0 +1,16 @@
+Ordre du Jour de la réunion n°6 du 14/02/2024
+
+Ce qui a été fait:
+
+- Random Dyna fonctionne : https://github.com/Meriadoc-gitgit/Prioritized-Memories-Activation/blob/cb6484be49bb847c58eedd1f80fafa535ff00b75/src/RandomDyna.py
+- Implementation du Labyrinthe de l'article de Peng and Williams et de leurs paramètres: https://github.com/Meriadoc-gitgit/Prioritized-Memories-Activation/blob/fc42204c0c5e6503e99f11df75e38adeade82164/src/test_P_and_W.ipynb
+- La visualisation est maintenant "en direct"
+- début de code pour la Successor Representation (ne fonctionne pas encore)
+
+Questions:
+
+- Pour le successor representation, dans la boucle il vaut mieux utiliser un while not stop avec stop un booléen ou un for i in range(nb_iterations) ?
+
+- Pour l’équation (6) de SJ Gershman, a-t-on le droit de stocker M et R et effectue une boucle avant pour connaître tous ces valeurs ? Sinon on fait comment pour calculer V(s) effectivement ?
+
+-Comment modifier la position de l’etat terminal dans le labyrinthe, modifier last_states ne semble pas avoir d’effet

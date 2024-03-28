@@ -1,0 +1,47 @@
+Ordre du Jour de la réunion n°4 du 31/01/2024
+
+Ce qui a été fait cette semaine:
+	- notebooks
+	- lecture de l'article sur la Successor Representation
+	- relecture de l'article de Peng et Williams
+	- premiere tentative d'implementation de l'algorithme de Peng and Williams
+
+
+Nos questions:
+
+	- Est ce correct que Q Dyna c'est de la programmation dynamique?
+
+	- Pourquoi il n'y a pas d'agent en programmation dynamique?
+
+	- Dans l'algo proposer par peng and williams à la fin de l'article est ce que Q chapeau c'est le world model? 
+
+	- Quel est l'interet de travailler sur une estimation de la q table dans l'algorithme de Peng and Williams plutot que directement sur la q table?
+
+	- Dans le notebook 1 dans la partie Generalized Policy Iteration with Q function que doit-t-on faire pour la fonction evaluate_one_step_q_count? 
+
+	- Dans le notebook numero 2 dans la partie Harder case: fixed starting point and exploration: 
+  	  Pourquoi il est dur pour l'agent de trouver l'etat terminal en partant de la case en haut à gauche et pourquoi cela lui facilite la tache si on initialise toutes les paires (s,a) a une petite valeur?
+  
+	- Pouvons nous revenir sur les fonctions softmax et sample_categorical utilisé dans q_learning_soft?
+ 
+	- Dans q_learning_soft à quoi correspond à quoi correspond q_min?
+  
+	- Dans l'algorithme que nous avans essayé de coder nous ne comprenons/savons pas comment/quand l'arreter
+  
+	- Dans l'article sur la Successor Representation pourquoi l'auteur marque une difference entre les états absorbant et ceux qui ne le sont pas?
+  
+	- Serait il possible de revenir sur les 3 derniers paragraphe de la section 2 de l'article sur la Successor Representation
+	
+	
+	- Dans la priorisation utilisant la difference de magnitude pourquoi plus la magnitude est grande plus il est important ? 
+	
+	- Pour chaque pair (action, état), pour la différence de prediction pourquoi doit-on soustraire Q(x,a), quel est le principe de cette formule ?
+	
+	- Dans la priorisation utilisant l'effet sur la valeur de l’état de départ pourquoi suppose-t-on que toutes les valeurs initiales sont trop pessimistes ?
+	- Dans l’algo de queue-dyna détaillé plusieurs la partie (f), pourquoi met-on à jour d’une telle manière ?
+
+
+Problèmes rencontrés:
+
+	- l'algorithme que nous avons implementé disponible sur github (fichier peng_and_wiliams.ipynb) ne termine pas
+

@@ -1,0 +1,113 @@
+\documentclass{article}
+\usepackage{geometry} % For customizing page layout
+\usepackage{graphicx} % For including images
+\usepackage{lipsum} % For generating dummy text (remove in your actual document)
+\usepackage{titlesec} % For customizing section titles
+
+\titlespacing*{\section}{0pt}{1.5\baselineskip}{0.2\baselineskip} % Adjust the spacing here
+
+% Customizing page layout
+\geometry{
+    margin=2.5cm, % Adjust margins as needed
+}
+
+
+\title{Activation priorisée des souvenirs pour l'apprentissage par renforcement}
+\author{Vu Hoang Thuy Duong, Jeannne Bonnaventure, Samy Bishay}
+\date{18 Mars 2024}
+
+
+\begin{document}
+
+
+\maketitle
+
+\renewcommand{\thesection}{\arabic{section}} % Reset section numbering to arabic style
+
+\begin{center}
+    
+    {
+    \large LU3IN013 - Projet de Recherche
+    
+    Sous la supervision d'Olivier Sigaud
+    }
+\end{center}
+
+\section{Contexte}
+Un agent autonome interagit avec un environnement au départ inconnu. L'agent peut se déplacer dans cet environnement et selon où il se trouve recevoir ou non une récompense. Le but de l'agent est de trouver une politique optimale qui, pour chaque état, lui indique l'action à effectuer dans le but d'optimiser sa récompense totale. Cette situation correspond à un problème d'apprentissage par renforcement. Le but de notre projet est d'implémenter différentes approches de ce problème pour pouvoir les comparer et possiblement les améliorer.
+
+
+Pour ce type de problème, deux modèles d'apprentissage sont possibles pour l'agent: 
+
+\begin{enumerate}
+    \item un apprentissage \textit{model-free} : l'agent ne connaît ni la fonction de récompense, ni la fonction de transition, il tente de trouver une politique optimale uniquement à partir de mises à jour très locales, il ne stocke aucune information sur ce qui a pu se passer avant ou ce qui peut se passer plus tard.
+    \item un apprentissage \textit{model-based} : l'agent tente de se créer une estimation des fonctions de transition et de récompense pour optimiser son apprentissage. Il va donc stocker des informations pour créer son propre modèle et, grâce à ce dernier, trouver une politique optimale.
+\end{enumerate}
+
+Les différents algorithmes auxquels nous nous intéressons pour l'instant sont des algorithmes \textit{model-based} : \textit{Largest First} et \textit{Focused Dyna} proposé par Peng and Williams, 
+\textit{Random Dyna} proposé par Sutton ainsi que la \textit{Successor Representation} proposée par Dayan.
+
+\section{Algorithmes étudiés et Implémentations}
+Cet algorithme construit une estimation de la Q-table de l’environnement : une matrice qui possède un nombre de lignes égal au nombre d’états et un nombre de colonnes égal au nombre d’actions que l’agent peut effectuer dans l’environnement. À chaque élément $Q[etat, action]$ est attribuée une valeur qui correspond à la valeur de récompense estimée pour l’état en effectuant l’action. Plus simplement si $Q[x,a] > Q[x,b]$, cela signifie qu’il est plus intéressant de choisir l’action $a$ à l’état $x$ plutôt que l’action $b$. 
+Cette matrice permet ainsi à l’agent lorsqu’il se trouve à un état donné de choisir l’action à effectuer qui peut potentiellement lui rapporter le gain le plus important. Pour construire cette matrice, l’algorithme part d’une matrice nulle et, à chaque pas effectué dans le monde, met à jour la valeur de la matrice.
+
+$$\hat{Q}(etat',action')=\hat{Q}(etat',action')+\alpha(recompense'+\gamma\hat{V}(next\,state')-\hat{Q}(etat',action')$$    % à intégrer la formule
+
+Cette formule permet de mettre à jour notre ancienne valeur $Q[etat, action]$. Différents paramètres sont en jeu dans cette formule ce qui permet de gérer l’apprentissage de différentes façons. 
+\begin{enumerate}
+    \item $\alpha$ correspond à un \textit{learning rate}, c'est-à-dire à quel point les informations reçues en effectuant l’action depuis l’état auront un impact sur la mise à jour de l’estimation d’origine (ces nouvelles informations sont : la récompense reçue en effectuant l’action, l’état sur lequel l’agent est arrivé ainsi que la valeur maximale estimée pour ce nouvel état $\max_{b\in1...nb\,actions}Q[next\,state,b]$. 
+    \item $\gamma$ correspond à un \textit{facteur d'actualisation} qui permet de faire en sorte que plus les états sont éloignés temporellement de l’état auquel on s’intéresse, plus faible est leur impact sur la mise à jour (les informations des états éloignés sont contenu dans $\max_{b\in1...nb\,actions}Q[next\,state,b]=v(next\,state)$. En effet de manière télescopique $v(next\,state)$ contient des informations sur $v(next\,next\,state, etc)$. 
+\end{enumerate}
+
+Les mises à jour de la Q table à ce niveau ne sont donc effectuées qu’une unique fois par pas de l’agent dans le monde. 
+
+\subsection{Random Dyna}
+
+Afin d'accélérer l’apprentissage de cette Q-table, Random Dyna propose d’ajouter un replay buffer que nous avons implémenté sous la forme d’un dictionnaire.  Ce replay buffer contient des quadruplets sous la forme : 
+$$[etats, action, etat\,suivant, recompense]$$ 
+qui décrivent des événements passés. Un événement est ajouté au replay buffer si son erreur de prédiction de différence temporelle
+
+ %(ajouter formule diff de prédiction temporelle)
+ $$recompense + \gamma\hat{V}(y) - \hat{Q}(etat,action)$$    % à intégrer la formule
+ 
+ est supérieure à une valeur fixée. Une erreur de différence temporelle correspond à attribuer une valeur à l’erreur effectuée entre une ancienne estimation et une nouvelle et correspond dans notre programme à la clé des quadruplets de notre dictionnaire.
+ Le replay buffer est utilisé pour l'accélération de l’apprentissage. A chaque pas effectué dans le monde réel une mise à jour de la Q table est faite par rapport à l’événement qui vient de se produire, mais on procède de plus à des mises à jour non plus à l’aide de ce dernier événement vécu mais à l’aide d'événements antérieurs stockés en mémoire (dans le replay buffer).
+
+\subsection{Largest First et Focused Dyna}
+
+Le principe des algorithmes Largest first et Focused Dyna est similaire à celui de Random Dyna. Simplement au lieu de tirer aléatoirement dans notre replay buffer pour effectuer des mises à jour, le choix devient plus fin. 
+
+\textit{Largest First} permet de traiter en priorité les événements avec la plus grande différence temporelle, c’est-à-dire que les événements dont les estimations étaient les plus mauvaises sont traitées en premier et pour chaque quadruplet traité on ajoute au replay buffer tous les prédécesseurs de sa variable “état”. Ainsi les changements sont diffusés de manière homogène. 
+
+\textit{Focused Dyna} est un algorithme qui, lui, diffère de Random Dyna par  la façon dont les événements sont ajoutés au replay buffer; non plus sur la base de leur erreur de différence temporelle mais à l’aide d’un nouveau critère
+
+$$\gamma^{d(etat)}[recompense + v(etat\,suivant)]$$
+ 
+avec $d(etat)$ qui correspond à une estimation de la longueur du plus court chemin entre $etat$ et l’\textbf{etat de depart} de l’agent. La fonction $d$ peut correspondre à différents algorithmes tel que Dijkstra ou encore A*. Ce critère permet d’ajouter les éléments qui se situent le long du plus court chemin entre l’état de départ et d’arrivée.
+
+% (ajouter image).
+
+Ce nouveau critère sert de clé aux événements ajoutés au replay buffer et les événements traités sont ceux dont la clé est la plus élevée.
+
+\subsection{Successor Representation}
+
+Pour appréhender de manière concrète le fonctionnement de cet algorithme, imaginons que nous incarnons un robot aspirateur chargé de parcourir une maison afin de nettoyer toutes ses pièces. Notre objectif est d'apprendre quelles actions entreprendre dans chaque configuration de la maison afin de maximiser notre efficacité.
+
+Pour ce faire, nous faisons appel à la Successor Representation. Nous attribuons à chaque configuration de la maison une valeur qui reflète sa proximité par rapport à l'état final souhaité (par exemple, une pièce entièrement propre). Lorsque nous parvenons à nettoyer une pièce avec succès, nous mettons à jour la valeur de l'état précédent afin de le rapprocher davantage de l'état final.
+
+Par exemple, si nous débutons notre parcours dans une pièce sale et que nous parvenons à nettoyer une pièce adjacente avec succès, nous ajustons la valeur de l'état initial pour le rapprocher de l'état final, car nous nous rapprochons ainsi de l'objectif de nettoyer l'ensemble des pièces.
+
+Ainsi, la Successor Representation nous permet d'apprendre quelles actions entreprendre dans une configuration donnée en tenant compte de leur impact sur la progression vers des états futurs souhaitables.
+
+D'un point de vue technique, la Successor Representation fournit une liste des probabilités de transition vers d'autres configurations à partir d'une configuration actuelle \( s \). En supposant l'existence de la matrice de transition \( T \) (construite lors de la phase d'exploitation) et de la matrice d'identité \( I \), la Successor Representation est obtenue en appliquant la formule suivante :
+
+\[ M = (I - \gamma T)^{-1} \]
+
+Ici, \( \gamma \) (qui varie dans l'intervalle \([0,1]\)) représente le facteur d'actualisation temporelle. La valeur \( M[j,i] \) peut être considérée comme une mesure de la fréquence de présence de l'état \( i \) au fil du temps, si l'agent commence son parcours à partir de l'état \( j \), \( \gamma \) contrôlant l'importance accordée aux pas de temps dans l'actualisation future. La Successor Representation de l'état \( j \) est représentée par la \( j \)-ième ligne de \( M \), décrivant ainsi les états vers lesquels l'agent est susceptible de se déplacer à partir de l'état \( j \).
+
+
+\section{Avancement}
+
+Nous avons fini d’implémenter l’algorithme Largest First, Random Dyna et celui du calcul de la Successor Representation. Nous travaillons actuellement sur l’implémentation de Focused Dyna qui pour la fonction $d$ utiliserait l’algorithme A* , l’idée est ensuite de changer A* par une fonction qui utiliserait la Successor Representation. 
+
+\end{document}

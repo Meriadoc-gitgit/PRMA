@@ -1,0 +1,20 @@
+Ordre du Jour de la réunion n°3 du 24/01/2024
+
+Ce qui a été fait cette semaine:
+- Visionnage des vidéos de cours
+- notebook 
+- Lecture de l'article de Peng et Williams
+- Lecture de l'article de Mattar et Daw
+- Lecture de l'article de Schaul, Quan, Antonoglou et Silver
+- Lecture de l'article de Moore et Atkeson
+
+nb: nous n'avons pas tous lu les mêmes articles
+
+Ce dont on aimerait discuter:
+
+- Revenir sur la Q function: à quel moment s'applique la politique?
+- Sur l'article de Schaul: serait-il possible de détailler les résultats des tests de l'agent vs l'humain dans les 52 jeux experimenté (la question repose sur la figure 3 de l'article p6)
+
+
+Problème rencontré:
+- (personnel) Impossible de travailler sur le notebook à cause de la bibliothèque box2d-kengz

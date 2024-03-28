@@ -1,0 +1,118 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+
+\title{Présentation du projet}
+\author{Vu Hoang Thuy Duong, Jeanne Bonnaventure, Samy Bishay}
+\date{18 Janvier 2024}
+
+\begin{document}
+
+\maketitle
+
+\section{Partie I - Définition}
+\subsection{Apprentissage par renforcement}
+- \textbf{Définition} : L'apprentissage par renforcement mène à contrôler le comportement d'un agent, ce qui sépare en 2 cas : 
+
+    - Si c'est une bonne action, l'agent est félicité,
+    
+    - sinon, il est pénalisé
+
+- Lien pour en apprendre plusieurs proposé par M.Sigaud sur Youtube, avec les supports de cours
+
+- Garder dans le monde d'animal : si le rat est puni alors il le fera moins, sinon il refera plusieurs
+
+- Produit des algorithmes jusqu'à avoir les mêmes comportements
+
+\subsection{Deux perspectives différentes pour le projet}
+\begin{enumerate}
+    \item Côté \textbf{Machine Learning} : un branche d'IA
+    \begin{itemize}
+        \item Apprentissage automatique
+        \item Basé sur différentes familles d'algorithmes, soit supervisé soit non-supervisé
+    \end{itemize}
+    \item Côté \textbf{Neurosciences computationnelles}
+\end{enumerate}
+
+\subsection{Model}
+\begin{enumerate}
+    \item \textbf{Model-free} : Peut ou non avoir une fonction de politique et/ou de valeur. Faire juste la mise à jour locale sans calculer ce qui va se passer après
+    \item \textbf{Model-based} : Fonction de valeur et/ou fonction de politique. Imaginer ce qui va se passer après même s'il ne l'a jamais expériencé $\rightarrow$ Mémoire de l'environement
+\end{enumerate}
+
+\subsection{Types de mémoire}
+\begin{enumerate}
+    \item Mémoire de l'environement
+    \item Mémoire épisodique $\rightarrow$ Stocker les mémoires dans un tabulaire \textit{(\textbf{Reply Buffer})}
+\end{enumerate}
+\subsection{Replay}
+\begin{enumerate}
+    \item \textbf{Backward Replay} : Je suis arrivé à reward, je rejoue dans ma tête ce qui vient de se passer
+    \item \textbf{Forward Replay} : Je suis au début d'un épisode, je vais essayer d'imaginer ce qui peut se passer
+    \item \textbf{Offline Replay} : Je suis en train de dormer, je rejoue des épisodes ou des bouts d'épisode \textit{(Possible question offline replay c'est backward ou forward)}
+    \item \textbf{Prioritized experience replay de Tom Schaul} : permet de tirer la mémoire intelligent par l'erreur de différence temporelle
+\end{enumerate}
+\subsection{Deux types de RL}
+\begin{enumerate}
+    \item Apprentissage par renforcement tabulaire \textit{(espace discret)}
+    \item Deep reinforcement learning : depuis 2015 apprentissage par renforcement tabulaire s'est transformé dans des espaces d'état et d'action continu. Réseau de neurons en 2 couches.
+\end{enumerate}
+
+\section{Partie II - Algorithmes et Publications}
+\textbf{1993} : Publication de papiers avec une approche différente : 
+\begin{enumerate}
+    \item \textbf{Prioritize sweeping de Moore et Atkeson} : explique le backward replay. Utilisé pour essayer de déterminer quelle séquence rejouer dans le replay.
+    \item \textbf{Queue-DYNA de Peng et Williams} : propose 2 algorithmes de forward et backward replay \textit{(\textbf{Question} : Est-ce que le backward et le forward sont combiné ?)}. Le mécanisme pour le forward replay est \textit{"bricolé"}. Travail de Richard Sutton a une grande importance dans cet article.
+    \item \textbf{Successor representation par Peter Dayan} : n'est pas heuristique mais formelle mais plus cher, explique la probabilité de passer d'un état à un autre donc c'est sur la partie de forward replay
+    
+\end{enumerate}
+
+\section{Étapes visés}
+\subsection{Première étape du projet}
+\begin{enumerate}
+    \item Ecrire l’algorithme  de Queue DYNA \textit{(à nous d’écrire le code)} puis y intégrer Successor Reprensation \textit{(code fournie)}. L’idée est ensuite de comparer l’algorithme de Queue DYNA avec et sans l’intégration de Successor Representation
+    \item Etape plutôt du point de vu machine learning 
+    \item L’algorithme de Succession Representation étant assez complexe pour le cerveau on peut se demander si le cerveau n’utiliserait pas une forme d’algorithme se rapprochant de celui de Peng et Williams on approche ainsi le sujet d’un point de vu plus orienté neurosciences computationnelles.
+\end{enumerate}
+
+\subsection{Possible deuxième étape}
+\textbf{Contexte}
+\begin{enumerate}
+    \item deux types d’apprentissage par renforcement :
+    \begin{itemize}
+        \item apprentissage par renforcement tabulaire : s’effectue dans des espaces discrets
+        \item deep reinforcement learning : depuis 2015 apprentissage par renforcement tabulaire dans des espaces d’états et d’actions continus
+    \end{itemize}
+    \item Algorithme Deep Q Network (DQN) : avec un seul algortithme un équipe à réussi à faire jouer à une intelligence à 57 jeux Atari. 
+    \item Prioritize experience relay :A la suite de cet algorithme  un chercheur s’est proposé d’améliorer DQN. En tirant de manière intelligente dans le replay buffer à l’aide du critère de l’erreur de différence  temporelle : critère du backward replay.  Ce nouvel algorithme est similaire à celui proposé par Mattar et Daw , de plus il est beaucoup plus efficace que celui de DQN.
+
+\item L’idée de recherche qu’il pourrait être interessant d’envisager serait de proposé un critère/algorithme similaire à celui évoqué plus haut mais cette fois ci non pour le backward replay mais pour le forward replay.
+
+\item Une difficulté à prendre en compte est que la Succession Representation est assez simple dans un espace continue mais peut s’avérer bien plus dur dans un espace continu.
+\end{enumerate}
+\subsection{Deux possibilité de recherche}
+\begin{enumerate}
+    \item faire un travail lent et détaillé
+    \item préférer un travail plus rapide quitte à sauter certaines étapes ou élément de compréhension profonde
+\end{enumerate}
+
+
+
+
+
+\section{Partie 4 - Sommaire}
+\subsection{Articles abordés}
+\begin{enumerate}
+    \item Prioritize swipping de Moore et Atkeson
+    \item Queue-DYNA de Peng et Williams
+    \item Successor representation par Peter Dayan
+\end{enumerate}
+\subsection{Note supplémentaire}
+\begin{enumerate}
+    \item Avant la semaine 3 et 4 : 
+    \begin{itemize}
+        \item Avoir des idées claires
+        \item Recoder les algorithmes et tester pour savoir le meilleur à utiliser
+    \end{itemize}
+    \item Envoyer les questions pour la 2è réunion au moins 24h à l'avance
+\end{enumerate}
+\end{document}

@@ -1,0 +1,29 @@
+Compte rendu de la reunion n°5 du 07/02/2024
+
+Informations et explications:
+
+Adeline: réseau de neurones avec des couches intérmédiaires. Le signal entre deux neurones est modifié par une sigmoide (fonction qui passe rapidement du + au - ou inversement). Cette fonction peut être ajustée pour avoir un effet différent sur le signal. Le Universal Approximation Theorem dit que si un réseau de neurones a une infinité de couches, il pourrait être entrainé à approximer n'importe quelle fonction, linéaire ou non, a un certain degré de précision. Comparé au Perceptron, Adeline peut travailler dans un environement continu.
+
+Une architecture non-linéaire correspond à un réseau de neurones possédant plusieurs couches de neurones (des non linéarités?)
+
+Quand on utilise une méchanique de différence temporelles on fait des mises à jour sur un unique état contrairement à lorsqu'on utilise la Successor Representation qui elle applique des mises à jour sur les colonnes de la matrice SR donc c'est à valeur vectorielle.
+
+Dans Random Dyna il nous faut ajouter l'ensemble des samples et c'est dans leur traitement que nous utilisons l'aléatoire.
+
+Le pixel de coordonnées (0,0) se trouve en haut à gauche.
+
+Possibilité avec la biliothèque SimpleMazeMdp de choisir où placer les murs.
+
+La figure dix correspond à l'entrainement d'un agent sur un terrain avec un certain mur, puis on retire ce mur et l'on observe à quelle vitesse l'agent comprends qu'il existe désormais un chemin plus court que celui qu'il avait initialement appris
+
+
+
+A faire:
+
+- Cloner la bibliothèque MazeMDP pour implémenter un environnement stochastique 
+- Regarder le github de l'année dernière pour s'inspirer de leur code de la successor representation
+- reproduire les labyrinthes de l'article de Peng and Williams
+- Implementer Focused Dyna avec l'algorithme de Djikstra pour trouver le plus court chemin
+- Reprendre Random Dyna 
+- Essayer de voir comment ne plus utiliser la bibliothèque fournit pour la visualisation
+
