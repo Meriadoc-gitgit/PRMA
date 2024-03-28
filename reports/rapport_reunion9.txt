@@ -1,0 +1,32 @@
+Compte rendu de la reunion n°9 du 20/03/2024
+
+Informations et explications:
+
+Onde tranchante en crête
+L’onde tranchante en crête, voir diapositive 52/66 du cours
+SWR = explosion irrégulière de l'activité populationnelle qui donne lieu à des oscillations intenses mais brèves dans la couche cellulaire pyramidale CA1
+Se produisent en même temps que les événements de relecture pendant le sommeil
+On pense qu'ils jouent un rôle dans la mémoire spatiale, stockant les informations spatiales de l'hippocampe vers le cortex
+
+Généralisation
+généralisation : rl tabulaire on a des cases : les mises à jour sont très locales, en mileu continu il y a de la généralisation car à partir d'un changement pour un unique point l'ensemble de la fonction que l'on tente d'approximer est recalculé (ou au moins une partie comportant plusieurs points =états)
+généralisation dans le cas discret: learning classifier system les états ne sont pas représentés par des cases mais par des features booléens qui décrivent l'état.  Dans ces classifier on peut remplacer la valeur 0 ou 1 par #. Les mises à jour sur les états [0 1 # 0 0] permettent les mises à jour sur les états [0 1 0 0 0] et [0 1  1 0 0], ce principe correspond à une généralisation dans le cas tabulaire.
+arrivent pendant le sommeil quand l'agent fait du forward replay. Il rejoue des épisodes dans sa tête, mécanisme des transferts des épisodes vécus que l'agent rejoue pour l'amélioration de sa politique. l'algorithme de Peng and Williams ne prends pas compte du offline replay, mécanismes influés par les sharp wave ripples
+Les algorithmes model based utilisent des expériences simulées tandis que les algorithmes episode based eux, utilisent des expériences rememorées. Dans notre projet pas besoin de faire la différence. 
+_______
+
+Mattar et Daw tentent d'établir un critère pour trouver de quelles façons tirer les épisodes dans la mémoire et comment ce choix "évolue" en fonction de la situation. En fin d'épisode on va faire du backward tandis qu'au début on va faire du forward.
+
+Il n'y a pas de fonction set state dans les librairies car on pourrait faire des programmes qui trichent en simulation (ex : placer en robot dans les airs dans une simulation = situation impossible dans la réalité)
+
+Conseils : 
+dans nos algorithmes arrêter de passer la chaîne de caractère qui donne juste le nom de l'algorithme mais utiliser la classe
+mettre en minuscule loop_information
+learning_test: renvoie le nombre de pas de temps que fait l'agent jusqu'au goal
+à renommer  en get_nb_step
+
+_______
+
+Pour la semaine prochaine : 
+Finir les visualisations
+Avoir un code propre et débuggé

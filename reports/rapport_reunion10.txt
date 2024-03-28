@@ -1,0 +1,39 @@
+Rapport de la réunion n°10 du 27/03/2024
+
+Informations et explications:
+il est inutile de faire des backups avant d'avoir atteint le goal une première fois (car avant cela les backups n'ont aucun effet car tout est à zéro)
+Changer le nom de update_model -> feed_buffer
+nous confondons mise à jour de la mémoire (calculs des q_valeurs par des backups) et remplissage de la mémoire (dans peng and williams correspond à stocker toutes les expériences vécues).
+mettre dans la queue c'est mémoriser ce qui se passe
+autre processus c'est calculer les qvaleurs prendre : bellman backup 
+pas de raison d'avoir mise à jour des q values dans update_model
+Il faut changer updatePQueue à updateMemory 
+la structure de dictionnaire pour notre mémoire n'est pas adapté (si on souhaite utiliser un dictionnaire il faut que les clé soit state et next state). Pour largest first il faut utiliser une priority queue (key_choice ne fera que tirer l'éléments le plus à gauche = pas de parcours de l'ensemble des clés).
+souvent le replay buffer a la taille un million dans step in world on parcours toutes les clés, on devrait avoir clés (state,nextstate) virer code de 123 à 127 on rajoute l'élément quoi qu'il arrive
+il devrait y avoir une possibilité de update les priorités.
+Dans largest first il faut avoir une PQueue
+algorithms.py doit changer de nom
+pour random dyna une structure adapté et suffisante serait une liste
+Pour Focus Dyna : 
+nouvelle variable distance_d = self.stepsfromstart[currentstate]
+distance calculator a une methode get distance from start that either uses successor representation or dijkstra
+faire tourner dijkstra sans faire bouger l'agent.
+Pour la SR : 
+Travaille plutôt sur l’histoire des probabilités de transition aux autres états
+Faut créer un structure de données pour la SR car les autres classes en a pas besoin
+Peng and Williams : pas vraiment du dyna car ils stockent tout dans une liste alors que dans Dyna l'idée est de stocker un graphe correspondant au modèle du monde?
+
+À faire:
+- renommer update_model en update_memory
+- changer les structures de stockage 
+- séparer le stockage et le traitement des expériences
+- updateQValue doit vraiment mettre à jour les Qvaleurs pas renvoyer les valeurs qui permettent la mise à jour
+- on peut mettre des éléments de la fonction update_model dans une fonction que l'on mettrait dans PrioritizedReplayAgent (
+	self.PQueue.pop(key)
+    	self.QTable[state,action] = self.updateQValue(state,action,next_state,reward)   
+    	self.updatePQueue(state)           
+- continuer de travailler sur l'encapsulation et l'héritage
+- finir djikstra
+- mettre la successor representation dans une fonction type focused dyna
+- réfléchir et implémenter la structure de stockage de la mémoire la plus adaptée pour FocusedDyna
+- faire en sorte d'obtenir les mêmes résultats que la figure 8 de Peng and Williams
