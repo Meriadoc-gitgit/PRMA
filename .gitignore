@@ -1,0 +1,9 @@
+
+*.pdf
+succrep.md
+src/__pycache__
+*.pyc
+*.csv
+src/videos
+*.avi
+.DS_Store
