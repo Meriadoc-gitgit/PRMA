@@ -1,225 +1,117 @@
 """
 -------------------
 
-Contient l'intégral du code de la Successor Representation
+Contient l'intégralité du code de la Successor Representation
 
 -------------------
 """
-# Import necessary libraries
-import copy
 import numpy as np
 
-from Algorithms import PrioritizedReplayAgent
 
-class SuccessorRepresentationAgent(PrioritizedReplayAgent) : 
-  def __init__(self, env) : 
-    self.mdp = env
+def onehot(value, max_value) :
+  vec = np.zeros(max_value)
+  vec[value] = 1
+  return vec
 
-    self.list_state_reward_SR = dict()
-    for st in range(self.mdp.nb_states) : 
-      self.list_state_reward_SR[st] = 0
+class TabularSuccessorAgent : 
+  def __init__(self, mdp, learning_rate, epsilon) : 
+    self.mdp = mdp 
+    self.w = np.zeros([mdp.nb_states])
+    self.learning_rate = learning_rate 
+    self.epsilon = epsilon
 
-    self.T = np.zeros((env.nb_states, env.nb_states))                  # Matrice de transition pour le SR  nb_state x nb_state
-    self.list_exp = self.exploration([])
-
-
-  def execute_action_chain(self,action_list) : 
-    """ Exécution d'une chaine d'action
-
-        Arguments
-        ----------
-            env -- Mdp from mazemdp.mdp : environnement sur lequel travailler
-            action_list -- List[int] : chaine d'action à effectuer
-
-        
-        Returns
-        ----------      
-        state -- int : état atteint à la fin de la chaine d'action
-    """
-    self.mdp.reset()
-    if len(action_list) == 0 : return
-
-    list_state = []
-
-    for action in action_list : 
-      state,_,_,_,_ = self.mdp.step(action)
-      list_state.append(state)
-    return state, list_state
-
-
-  def exploration(self, list_exp) : 
-    """ Phase d'exploitation de la Successor Representation afin de construire la matrice de transition T
-
-        Arguments
-        ----------
-            env -- Mdp from mazemdp.mdp : environnement sur lequel travailler
-            list_exp -- List[List[int]] : liste principale d'expérience
-
-        
-        Returns
-        ----------      
-            list_exp -- List[List[int]] : liste principale d'expérience développée par cette fonction après 5000 tours de boucle
-    """
-    if len(list_exp) == 0 : 
-      list_exp.append([0])
+    # La Successor Representation
+    self.M = np.stack([np.identity(mdp.nb_states) for i in range(mdp.action_space.n)])
     
-    i = 0
-    for trail in list_exp : 
-      i += 1
-      for action in range(self.mdp.action_space.n) : 
-        tmp_trail = copy.deepcopy(trail)
-
-        self.mdp.reset()
-        current_state, list_state = self.execute_action_chain(tmp_trail)
-        
-        next_state, reward, terminated, truncated,_ = self.mdp.step(action)
-        list_state.append(next_state)
-        
-
-        if current_state != next_state :
-          tmp_trail.append(action)
-          #print(tmp_trail, action, next_state, current_state, terminated)
-          self.T[current_state][next_state] += 1
-
-          
-          if tmp_trail not in list_exp : 
-            list_exp.append(tmp_trail)
-
-          if next_state in self.mdp.terminal_states : 
-            for st in list_state : 
-              self.list_state_reward_SR[st] += 1
-
-      list_exp.remove(trail)
-      if i == 5000 : 
-        return list_exp
-
-  def transition_rate_from_state(self, state) : 
-    """ Déterminer le taux de transition aux autres états à partir de l'état pris en entrée
-
-        Arguments
-        ----------
-            env -- Mdp from mazemdp.mdp : environnement sur lequel travailler
-            state -- int : état demandé
-
-        
-        Returns
-        ----------      
-            transition_rate -- List[float] : taux de transition aux autres états à partir de l'état pris en entrée
-    """
-    #print(self.mdp.gamma * self.T)
-    SR = np.linalg.inv(np.eye(self.mdp.nb_states) - self.mdp.gamma * self.T) # (I - gamma * T)^-1
-    transition_rate = SR[state]
-
-    return transition_rate
-
-  def transition_recommandation(self, state) : 
-    """ Retourne le dictionnaire de clé (action, next_state) et de valeur taux de transition de state à next_state
-
-        Arguments
-        ----------
-            env -- Mdp from mazemdp.mdp : environnement sur lequel travailler
-            state -- int : état demandé
-
-        
-        Returns
-        ----------      
-            possible_state_to_transit -- Dict[(action, next_state), transition_rate] : dictionnaire de clé (action, next_state) et de valeur taux de transition de state à next_state
-    """
-    if state in self.mdp.terminal_states : 
-      return dict()
+  def Q_estimates(self, state) : 
+    # Generate Q values for all actions.
+    goal = self.mdp.terminal_states
+    if goal == None:
+      goal = self.w
+    else:
+      goal = onehot(goal, self.mdp.nb_states)
     
-    action_list = []
+    return np.matmul(self.M[:,state,:],goal)
 
-    for exp in self.list_exp : 
-      current_state, _ = self.execute_action_chain(exp)
-      if current_state == state : 
-        action_list = exp 
-    
-    """if state != 0 and len(action_list) == 0 :
-      return np.argmax(PrioritizedReplayAgent.transition_rate_from_state(env,state))"""
+  def sample_action(self, state) : 
+    # Samples action using epsilon-greedy approach
+    if np.random.uniform(0, 1) < self.epsilon:
+      action = np.random.randint(self.mdp.action_space.n)
+    else:
+      Qs = self.Q_estimates(state)
+      action = np.argmax(Qs)
+    return action
+  
+  def update_w(self, current_exp) :
+    # Simple update rule
+    _,_,next_state,reward,_ = current_exp
+    error = reward - self.w[next_state]
+    self.w[next_state] += self.learning_rate * error 
+    return error
 
-      
-    possible_state_to_transit = dict()
-    for action in range(self.mdp.action_space.n) : 
-      self.mdp.reset()
-      _, _ = self.execute_action_chain(action_list)
-      next_state, _, _, _, _ = self.mdp.step(action)
-      if next_state != state : 
-        possible_state_to_transit[(action,next_state)] = self.transition_rate_from_state(state)[next_state]
+  def update_sr(self, current_exp, next_exp) : 
+    # SARSA TD learning rule
+    state, action, next_state,reward,terminated = current_exp
+    _,next_action,_,_,_ = next_exp
 
-    return possible_state_to_transit
-
-
-  """ ===================== SR USING V FUNCTION ===================== """
-  def SR_v_function(self,state) : 
-    """ Retourne la value function for Successor Representation
-
-        Arguments
-        ----------
-            env -- Mdp from mazemdp.mdp : environnement sur lequel travailler
-            state -- int : état demandé
-        
-        Returns
-        ----------      
-        V(s) = Sum{ M(s,s') * R(s') }
-    """
-    possible_state_to_transit = self.transition_recommandation(state)
-    V_s = 0
-
-    for (action, next_state), SR in possible_state_to_transit.items() : 
-      V_s += SR * self.list_state_reward_SR[next_state]
-
-    return V_s
-
-  def updateQValue(self, x, a, y, r) : 
-    """ Mets à jour le modele 
-
-        Arguments
-        ---------
-            x -- int : etat d'origine
-            a -- int : action effectue
-            y -- int : etat d'arrivee
-            r -- float : recompense recue
-        
-        Returns
-        ----------      
-            q_table[x,a] + alpha*(r+mdp.gamma*v_y-q_table[x,a])
-    """
-    #v_y correspond à la valeur maximal estimee pour l'etat y, multiplication par 1-terminated pour s'assurer de
-    #ne prendre en compte ce resultat que si l'etat y n'est pas successeur d'un etat terminal
-    terminated = x in self.mdp.terminal_states
-    v_y = self.SR_v_function(x)                 # difference avec celui de PrioritizedReplayAgent
-    return  self.QTable[x,a] + self.alpha*(r + self.mdp.gamma * v_y - self.QTable[x,a])
-
-  """ ===================== SR IN TD DIFFERENCE LEARNING - SARSA TD ===================== """
-  def onehot(self,state) : 
-    vec = np.zeros(self.mdp.nb_states)
-    vec[state] = 1
-    return vec
-
-  def SR_TD_error(self, current_state, next_state, terminated) : 
-    """ Retourne la différence temporelle utilisée pour la Successor Representation
-
-        Arguments
-        ----------
-            env -- Mdp from mazemdp.mdp : environnement sur lequel travailler
-            state -- int : état demandé
-            next_state -- état suivant
-            terminated -- bool : pour déterminer si on atteint l'état final
-        
-        Returns
-        ----------      
-        TD_error = I[s_t = s'] + gamma * M_hat(s_t+1, s') - M_hat(s_t,s')
-    """
-    I = self.onehot(current_state)
+    I = onehot(state, self.mdp.nb_states)
     if terminated : 
-      SR_current_st = self.transition_rate_from_state(current_state)
-      TD_error = (I + self.mdp.gamma * self.onehot(next_state) - SR_current_st)
+      td_error = I + self.mdp.gamma * onehot(next_state, self.mdp.nb_states) - self.M[action,state]
+
     else : 
-      SR_current_st = self.transition_rate_from_state(current_state)
-      SR_next_st = self.transition_rate_from_state(next_state)
-      TD_error = (I + self.mdp.gamma * SR_next_st - SR_current_st)
-    return np.mean(np.abs(TD_error))
+      td_error = I + self.mdp.gamma * self.M[next_action,next_state] - self.M[action,state]
+    self.M[action,state] += self.learning_rate * td_error 
+    return td_error
 
 
+class FocusedDynaSR : 
+  def __init__(self, mdp, learning_rate, epsilon, episode, train_episode_length, test_episode_length) : 
+    self.mdp = mdp
+    self.learning_rate = learning_rate
+    self.epsilon = epsilon
+    self.episode = episode 
+    self.train_episode_length = train_episode_length
+    self.test_episode_length = test_episode_length
+
+    self.agent = TabularSuccessorAgent(mdp, learning_rate,epsilon)
+    self.experiences = []
+    self.lifetime_td_errors = []
+    self.test_lengths = []
+
+  def train_phase(self) : 
+    state, _ = self.mdp.reset()
+    episodic_error = []
+
+    for i in range(self.train_episode_length) : 
+      action = self.agent.sample_action(state) 
+      next_state, reward, terminated, truncated,_ = self.mdp.step(action)
+      self.experiences.append([state, action, next_state, reward, terminated])
+      state = next_state
+      if i > 1 : 
+        td_sr = self.agent.update_sr(self.experiences[-2],self.experiences[-1])
+        td_w = self.agent.update_w(self.experiences[-1])
+        episodic_error.append(np.mean(np.abs(td_sr)))
+
+      if terminated : 
+        td_sr = self.agent.update_sr(self.experiences[-1], self.experiences[-1])
+        episodic_error.append(np.mean(np.abs(td_sr)))
+        break
+      
+    self.lifetime_td_errors.append(np.mean(episodic_error))
+
+  def test_phase(self) : 
+    state, _ = self.mdp.reset()
+    for i in range(self.test_episode_length) : 
+      action = self.agent.sample_action(state) 
+      next_state, reward, terminated, truncated,_ = self.mdp.step(action)
+      state = next_state
+      if terminated : 
+        self.test_lengths.append(i)
+        break
+
+  def execute(self) : 
+    for i in range(self.episode) : 
+      self.train_phase()
+      self.test_phase()
+    
 
