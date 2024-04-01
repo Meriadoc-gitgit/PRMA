@@ -9,9 +9,8 @@ import random
 from Algorithms import PrioritizedReplayAgent
 
 class RandomDyna(PrioritizedReplayAgent) : 
-
   """================== METTRE À JOUR LE MODÈLE =================="""  
-  def update_model(self, state, action, next_state, reward) : 
+  def updateMemory(self) : 
     """ Mettre à jour le modèle - instructions correspondantes à la deuxième partie de la boucle
 
         Arguments
@@ -27,9 +26,9 @@ class RandomDyna(PrioritizedReplayAgent) :
         ----------      
     """
     key = self.key_choice()
-    state, action, next_state, reward = self.PQueue[key]                # on récupère les valeurs de s_t, action, s_t+1, reward (ceux-là ne sont pas ceux en dehors de la boucle)
-    self.PQueue.pop(key)
-    self.QTable[state,action] = self.updateQValue(state,action,next_state,reward)   #mise à jour du modele
+    [state, action, next_state, reward] = self.memory[key]                # on récupère les valeurs de s_t, action, s_t+1, reward (ceux-là ne sont pas ceux en dehors de la boucle)
+    del(self.memory[key])
+    self.updateQValue(state,action,next_state,reward, 1)   #mise à jour du modele
   
   """================== CHOIX DE CLÉ =================="""  
   def key_choice(self) : 
@@ -42,4 +41,8 @@ class RandomDyna(PrioritizedReplayAgent) :
         ----------      
             key -- float : clé choisie selon l'algorithme pris en entrée
     """
-    return random.choice(list(self.PQueue.keys()))
+    return random.randint(0, len(self.memory)-1)
+
+
+  def fillMemory(self, key, experience):
+    self.memory.append(experience)

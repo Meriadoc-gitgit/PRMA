@@ -14,6 +14,6 @@ class RewardWrapper(gym.Wrapper):
     def step(self, action):
         next_state, reward, terminated, truncated, info = self.env.step(action)
         # reward shaping
-        if terminated:
+        if reward:
             reward = reward * 100
         return next_state, reward, terminated, truncated, info
