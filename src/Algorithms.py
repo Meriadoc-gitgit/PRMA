@@ -17,7 +17,7 @@ from IPython.display import Video
 from mazemdp.toolbox import egreedy, egreedy_loc
 from mazemdp.mdp import Mdp as mdp
 import csv
-
+import os
 
 """==============================================================================================================="""
 
@@ -49,6 +49,8 @@ class PrioritizedReplayAgent:
     self.EPSILON = EPSILON
     self.MAX_STEP = MAX_STEP
 
+    if os.path.exists('executionInformation.csv'):
+      os.remove('executionInformation.csv')
 
   """================== Excecution =================="""  
   def execute(self) : 
@@ -58,9 +60,7 @@ class PrioritizedReplayAgent:
             model_name -- str : nom du modèle
         ----------
     """
-    infos = [
-      ['nb_backup', 'nb_step']
-    ]
+    
 
  
     for i in range(self.episode): 
@@ -69,7 +69,6 @@ class PrioritizedReplayAgent:
         self.mdp.draw_v_pi(self.q_table, self.q_table.argmax(axis=1), recorder=None)
       for j in range(self.MAX_STEP):
         action, next_state, reward, terminated = self.step_in_world(state)
-
 
         if self.memory:                                      #update_model
           if len(self.memory)>5:                             #pour un pas de temps 5 update 
@@ -82,12 +81,9 @@ class PrioritizedReplayAgent:
 
         state=next_state                     #l'agent est maintenant à l'etat qui succède x
           
-      nb_step_res = self.get_nb_step()
-      infos.append([self.nb_backup, nb_step_res])
+      self.get_nb_step()
 
-    with open('executionInformation.csv', 'w', newline='') as file:
-      writer = csv.writer(file)
-      writer.writerows(infos)
+   
 
   """================== POUR EFFECTUER UN PAS DANS LE MONDE ==================""" 
   def step_in_world(self, state) : 
@@ -197,8 +193,11 @@ class PrioritizedReplayAgent:
       action = np.argmax(self.q_table[state, :])
       state,_,terminated, _, _ = self.mdp.step(action)
       if state in self.mdp.terminal_states:
-        return i
-    return i
+        break
+      
+    with open('executionInformation.csv', mode ='a', newline='') as file:
+      writer = csv.writer(file)
+      writer.writerow([self.nb_backup, i])
      
   # def get_nb_step(self):
   #   state = 2
