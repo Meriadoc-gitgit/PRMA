@@ -10,9 +10,9 @@ Code :
 -Il faudrait corriger les erreurs d'orthographe en français et renommer (entre autres) la classe main a "prioritized replay agent" 
 - En POO il faut réfléchir aux comportements et propriétés naturelles des classes. Il faut découper le code en pensant à la logique de ce qu'on fait.
 - Problème avec les paramètres appelées dans getaction 
-- il faut revoir une fonction erreur de différence temporelle qui calcule la valeur du delta dans pour algorithmes
+- il faut revoir une fonction erreur de différence temporelle qui calcule la valeur du DELTA dans pour algorithmes
 - update q table à renommer. 
-- get_action fausse inverse paramètres pour epsilon greedy et softmax
+- get_action fausse inverse paramètres pour EPSILON greedy et softmax
 - gain correspond au backward et need au forward
 - ajouter une parametre dans largest first et random qui spécifie le nombre de planification à faire pour chaque pas dans le monde réel effectué
 

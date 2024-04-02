@@ -7,7 +7,7 @@ nous confondons mise à jour de la mémoire (calculs des q_valeurs par des backu
 mettre dans la queue c'est mémoriser ce qui se passe
 autre processus c'est calculer les qvaleurs prendre : bellman backup 
 pas de raison d'avoir mise à jour des q values dans update_model
-Il faut changer updatePQueue à updateMemory 
+Il faut changer updatePQueue à update_memory 
 la structure de dictionnaire pour notre mémoire n'est pas adapté (si on souhaite utiliser un dictionnaire il faut que les clé soit state et next state). Pour largest first il faut utiliser une priority queue (key_choice ne fera que tirer l'éléments le plus à gauche = pas de parcours de l'ensemble des clés).
 souvent le replay buffer a la taille un million dans step in world on parcours toutes les clés, on devrait avoir clés (state,nextstate) virer code de 123 à 127 on rajoute l'élément quoi qu'il arrive
 il devrait y avoir une possibilité de update les priorités.
@@ -30,7 +30,7 @@ Peng and Williams : pas vraiment du dyna car ils stockent tout dans une liste al
 - updateQValue doit vraiment mettre à jour les Qvaleurs pas renvoyer les valeurs qui permettent la mise à jour
 - on peut mettre des éléments de la fonction update_model dans une fonction que l'on mettrait dans PrioritizedReplayAgent (
 	self.PQueue.pop(key)
-    	self.QTable[state,action] = self.updateQValue(state,action,next_state,reward)   
+    	self.q_table[state,action] = self.updateQValue(state,action,next_state,reward)   
     	self.updatePQueue(state)           
 - continuer de travailler sur l'encapsulation et l'héritage
 - finir djikstra

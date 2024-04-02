@@ -11,8 +11,8 @@ from heapq import heappop, heappush
 from Algorithms import PrioritizedReplayAgent
 
 class FocusedDyna(PrioritizedReplayAgent) : 
-  def __init__(self, mdp, alpha, delta, epsilon, max_step ,render, episode) :
-    super().__init__(mdp, alpha, delta, epsilon, max_step ,render, episode)
+  def __init__(self, mdp, ALPHA, DELTA, EPSILON, MAX_STEP ,render, episode) :
+    super().__init__(mdp, ALPHA, DELTA, EPSILON, MAX_STEP ,render, episode)
     
     #creation du dictionnaire etat:distance_du_debut
     self.start = self.mdp.reset()[0]
@@ -86,7 +86,7 @@ class FocusedDyna(PrioritizedReplayAgent) :
     key = self.key_choice()
     state, action, next_state, reward = self.PQueue[key]                # on récupère les valeurs de s_t, action, s_t+1, reward (ceux-là ne sont pas ceux en dehors de la boucle)
     self.PQueue.pop(key)
-    self.QTable[state,action] = self.updateQValue(state,action,next_state,reward)
+    self.q_table[state,action] = self.updateQValue(state,action,next_state,reward)
     self.updatePQueue(state,action, next_state, reward)
 
   """==============================================================================================================="""

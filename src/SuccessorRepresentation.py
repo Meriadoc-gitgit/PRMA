@@ -14,10 +14,10 @@ def onehot(value, max_value) :
   return vec
 
 class TabularSuccessorAgent : 
-  def __init__(self, mdp, learning_rate, epsilon) : 
+  def __init__(self, mdp, learning_rate, EPSILON) : 
     self.mdp = mdp 
     self.learning_rate = learning_rate 
-    self.epsilon = epsilon
+    self.EPSILON = EPSILON
 
     # La Successor Representation
     self.M = np.stack([np.identity(mdp.nb_states) for i in range(mdp.action_space.n)])
@@ -29,8 +29,8 @@ class TabularSuccessorAgent :
     return np.matmul(self.M[:,state,:],goal)
 
   def sample_action(self, state) : 
-    # Samples action using epsilon-greedy approach
-    if np.random.uniform(0, 1) < self.epsilon:
+    # Samples action using EPSILON-greedy approach
+    if np.random.uniform(0, 1) < self.EPSILON:
       action = np.random.randint(self.mdp.action_space.n)
     else:
       Qs = self.Q_estimates(state)
@@ -53,15 +53,15 @@ class TabularSuccessorAgent :
 
 
 class FocusedDynaSR : 
-  def __init__(self, mdp, learning_rate, epsilon, episode, train_episode_length, test_episode_length) : 
+  def __init__(self, mdp, learning_rate, EPSILON, episode, train_episode_length, test_episode_length) : 
     self.mdp = mdp
     self.learning_rate = learning_rate
-    self.epsilon = epsilon
+    self.EPSILON = EPSILON
     self.episode = episode 
     self.train_episode_length = train_episode_length
     self.test_episode_length = test_episode_length
 
-    self.agent = TabularSuccessorAgent(mdp, learning_rate,epsilon)
+    self.agent = TabularSuccessorAgent(mdp, learning_rate,EPSILON)
     self.experiences = []
     self.lifetime_td_errors = []
     self.test_lengths = []

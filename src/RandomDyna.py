@@ -10,7 +10,7 @@ from Algorithms import PrioritizedReplayAgent
 
 class RandomDyna(PrioritizedReplayAgent) : 
   """================== METTRE À JOUR LE MODÈLE =================="""  
-  def updateMemory(self) : 
+  def update_memory(self) : 
     """ Mettre à jour le modèle - instructions correspondantes à la deuxième partie de la boucle
 
         Arguments
@@ -44,5 +44,5 @@ class RandomDyna(PrioritizedReplayAgent) :
     return random.randint(0, len(self.memory)-1)
 
 
-  def fillMemory(self, key, experience):
+  def fill_memory(self, key, experience):
     self.memory.append(experience)

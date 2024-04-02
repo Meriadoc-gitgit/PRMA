@@ -51,11 +51,11 @@ Les différents algorithmes auxquels nous nous intéressons pour l'instant sont 
 Cet algorithme construit une estimation de la Q-table de l’environnement : une matrice qui possède un nombre de lignes égal au nombre d’états et un nombre de colonnes égal au nombre d’actions que l’agent peut effectuer dans l’environnement. À chaque élément $Q[etat, action]$ est attribuée une valeur qui correspond à la valeur de récompense estimée pour l’état en effectuant l’action. Plus simplement si $Q[x,a] > Q[x,b]$, cela signifie qu’il est plus intéressant de choisir l’action $a$ à l’état $x$ plutôt que l’action $b$. 
 Cette matrice permet ainsi à l’agent lorsqu’il se trouve à un état donné de choisir l’action à effectuer qui peut potentiellement lui rapporter le gain le plus important. Pour construire cette matrice, l’algorithme part d’une matrice nulle et, à chaque pas effectué dans le monde, met à jour la valeur de la matrice.
 
-$$\hat{Q}(etat',action')=\hat{Q}(etat',action')+\alpha(recompense'+\gamma\hat{V}(next\,state')-\hat{Q}(etat',action')$$    % à intégrer la formule
+$$\hat{Q}(etat',action')=\hat{Q}(etat',action')+\ALPHA(recompense'+\gamma\hat{V}(next\,state')-\hat{Q}(etat',action')$$    % à intégrer la formule
 
 Cette formule permet de mettre à jour notre ancienne valeur $Q[etat, action]$. Différents paramètres sont en jeu dans cette formule ce qui permet de gérer l’apprentissage de différentes façons. 
 \begin{enumerate}
-    \item $\alpha$ correspond à un \textit{learning rate}, c'est-à-dire à quel point les informations reçues en effectuant l’action depuis l’état auront un impact sur la mise à jour de l’estimation d’origine (ces nouvelles informations sont : la récompense reçue en effectuant l’action, l’état sur lequel l’agent est arrivé ainsi que la valeur maximale estimée pour ce nouvel état $\max_{b\in1...nb\,actions}Q[next\,state,b]$. 
+    \item $\ALPHA$ correspond à un \textit{learning rate}, c'est-à-dire à quel point les informations reçues en effectuant l’action depuis l’état auront un impact sur la mise à jour de l’estimation d’origine (ces nouvelles informations sont : la récompense reçue en effectuant l’action, l’état sur lequel l’agent est arrivé ainsi que la valeur maximale estimée pour ce nouvel état $\max_{b\in1...nb\,actions}Q[next\,state,b]$. 
     \item $\gamma$ correspond à un \textit{facteur d'actualisation} qui permet de faire en sorte que plus les états sont éloignés temporellement de l’état auquel on s’intéresse, plus faible est leur impact sur la mise à jour (les informations des états éloignés sont contenu dans $\max_{b\in1...nb\,actions}Q[next\,state,b]=v(next\,state)$. En effet de manière télescopique $v(next\,state)$ contient des informations sur $v(next\,next\,state, etc)$. 
 \end{enumerate}
 

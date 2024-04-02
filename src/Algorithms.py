@@ -22,15 +22,15 @@ import csv
 """==============================================================================================================="""
 
 class PrioritizedReplayAgent:
-  def __init__(self, mdp, alpha, delta, epsilon, max_step ,render, episode) :
+  def __init__(self, mdp, ALPHA, DELTA, EPSILON, MAX_STEP ,render, episode) :
     """ Initialisation de la classe PrioritizedReplayAgent
         Arguments
         ----------
             mdp -- Mdp de mazemdp.mdp 
-            alpha -- float : taux d'apprentissage
-            delta -- float : seuil pour tester la convergence
-            epsilon -- float : taux d'exploration pour e-greedy
-            max_step -- int : nombre de step pour l'apprentissage
+            ALPHA -- float : taux d'apprentissage
+            DELTA -- float : seuil pour tester la convergence
+            EPSILON -- float : taux d'exploration pour e-greedy
+            MAX_STEP -- int : nombre de step pour l'apprentissage
             render -- bool : paramètre pour l'affichage en .avi
             episode -- int : nombre d'épisode pour l'apprentissage
         ----------
@@ -39,16 +39,15 @@ class PrioritizedReplayAgent:
     self.mdp = mdp
     self.render = render
     self.episode = episode
-    self.QTable = np.zeros((mdp.nb_states, mdp.action_space.n))   # Q-Table nombre de state x nombre d'action
-    self.PQueue = dict()                                               # Dictionnaire PQueue for planning
+    self.q_table = np.zeros((mdp.nb_states, mdp.action_space.n))   # Q-Table nombre de state x nombre d'action
     self.memory = []
     self.experienced=[]
     self.nb_backup = 0
 
-    self.alpha = alpha
-    self.delta = delta
-    self.epsilon = epsilon
-    self.max_step = max_step
+    self.ALPHA = ALPHA
+    self.DELTA = DELTA
+    self.EPSILON = EPSILON
+    self.MAX_STEP = MAX_STEP
 
 
   """================== Excecution =================="""  
@@ -67,16 +66,16 @@ class PrioritizedReplayAgent:
     for i in range(self.episode): 
       state, _ = self.mdp.reset()                
       if self.render:
-        self.mdp.draw_v_pi(self.QTable, self.QTable.argmax(axis=1), recorder=None)
-      for j in range(self.max_step):
+        self.mdp.draw_v_pi(self.q_table, self.q_table.argmax(axis=1), recorder=None)
+      for j in range(self.MAX_STEP):
         action, next_state, reward, terminated = self.step_in_world(state)
 
 
         if self.memory:                                      #update_model
           if len(self.memory)>5:                             #pour un pas de temps 5 update 
             for k in range(4):
-              self.updateMemory()
-          self.updateMemory()
+              self.update_memory()
+          self.update_memory()
 
         if state in self.mdp.terminal_states:
           break 
@@ -105,23 +104,23 @@ class PrioritizedReplayAgent:
             reward -- float : récompense accordée
             terminated -- bool : déterminé si l'état est terminal
     """
-    action = egreedy(self.QTable, state, self.epsilon)       # choix d'une action avec la méthode epsilon
+    action = egreedy(self.q_table, state, self.EPSILON)       # choix d'une action avec la méthode EPSILON
     next_state, reward, terminated, truncated, _ = self.mdp.step(action)    # effectue l'action à dans l'environnement
 
     TD = abs(self.TD_error(state,action,next_state,reward))    # calcul de la différence de magnitude  utilise comme priorite dans la Queue
     if TD:
-      self.updateQValue(state, action, next_state, reward, self.alpha)   #backup qu'à partir du moment où on a atteint le goal
+      self.updateQValue(state, action, next_state, reward, self.ALPHA)   #backup qu'à partir du moment où on a atteint le goal
       self.nb_backup+=1  
     
     experience = [state,action,next_state,reward]
     self.experienced.append(experience) 
-    if TD >= self.delta:
-      self.fillMemory(TD,experience)
+    if TD >= self.DELTA:
+      self.fill_memory(TD,experience)
     
     return action, next_state, reward, terminated
 
   """==============================================================================================================="""
-  def updateQValue(self, state, action, next_state, reward, alpha) :
+  def updateQValue(self, state, action, next_state, reward, ALPHA) :
     """ Mets à jour le modele 
 
         Arguments
@@ -133,15 +132,15 @@ class PrioritizedReplayAgent:
         
         Returns
         ----------      
-            q_table[x,a] + alpha*(r+mdp.gamma*v_y-q_table[x,a])
+            q_table[x,a] + ALPHA*(r+mdp.gamma*v_y-q_table[x,a])
     """
     #v_y correspond à la valeur maximal estimee pour l'etat y, multiplication par 1-terminated pour s'assurer de
     #ne prendre en compte ce resultat que si l'etat y n'est pas successeur d'un etat terminal
     v_y = 0
     if state not in self.mdp.terminal_states:
-      v_y =np.max(self.QTable[next_state])
+      v_y =np.max(self.q_table[next_state])
 
-    self.QTable[state,action] = self.QTable[state,action] + alpha*(reward + self.mdp.gamma * v_y - self.QTable[state,action])
+    self.q_table[state,action] = self.q_table[state,action] + ALPHA*(reward + self.mdp.gamma * v_y - self.q_table[state,action])
    
 
   """==============================================================================================================="""
@@ -163,7 +162,7 @@ class PrioritizedReplayAgent:
       return policy   
 
   """==============================================================================================================="""
-  # calcule l'equivalence de delta 
+  # calcule l'equivalence de DELTA 
 
 
   def TD_error(self,state,action,next_state,reward):
@@ -181,11 +180,11 @@ class PrioritizedReplayAgent:
               reward + mdp.gamma* max_reward_next_state- q_table[state,action]
       """
       if state not in self.mdp.terminal_states:
-        max_reward_next_state=np.max(self.QTable[next_state])
+        max_reward_next_state=np.max(self.q_table[next_state])
       else:
         max_reward_next_state = 0
       
-      return reward + self.mdp.gamma * max_reward_next_state - self.QTable[state,action]
+      return reward + self.mdp.gamma * max_reward_next_state - self.q_table[state,action]
 
 
   """==============================================================================================================="""
@@ -194,8 +193,8 @@ class PrioritizedReplayAgent:
     """ renvoie le nombre de pas de temps que fait l'agent jusqu'au goal
     """
     state,_ = self.mdp.reset()  
-    for i in range(self.max_step):
-      action = np.argmax(self.QTable[state, :])
+    for i in range(self.MAX_STEP):
+      action = np.argmax(self.q_table[state, :])
       state,_,terminated, _, _ = self.mdp.step(action)
       if state in self.mdp.terminal_states:
         return i
@@ -203,8 +202,8 @@ class PrioritizedReplayAgent:
      
   # def get_nb_step(self):
   #   state = 2
-  #   for i in range(self.max_step):
-  #     action = np.argmax(self.QTable[state])
+  #   for i in range(self.MAX_STEP):
+  #     action = np.argmax(self.q_table[state])
   #     next_state = np.argmax(self.mdp.P[state,action])
   #     if next_state in self.mdp.terminal_states:
   #       return i

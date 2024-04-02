@@ -32,7 +32,7 @@ def get_policy_from_q(q: np.ndarray) -> np.ndarray:
 
 
 """==============================================================================================================="""
-# calcule l'equivalence de delta 
+# calcule l'equivalence de DELTA 
 
 
 def TD_error(mdp, q_table,state,action,next_state,reward):
