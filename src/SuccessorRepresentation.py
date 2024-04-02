@@ -16,7 +16,6 @@ def onehot(value, max_value) :
 class TabularSuccessorAgent : 
   def __init__(self, mdp, learning_rate, epsilon) : 
     self.mdp = mdp 
-    self.w = np.zeros([mdp.nb_states])
     self.learning_rate = learning_rate 
     self.epsilon = epsilon
 
@@ -25,11 +24,7 @@ class TabularSuccessorAgent :
     
   def Q_estimates(self, state) : 
     # Generate Q values for all actions.
-    goal = self.mdp.terminal_states
-    if goal == None:
-      goal = self.w
-    else:
-      goal = onehot(goal, self.mdp.nb_states)
+    goal = onehot(self.mdp.terminal_states, self.mdp.nb_states)
     
     return np.matmul(self.M[:,state,:],goal)
 
@@ -42,13 +37,6 @@ class TabularSuccessorAgent :
       action = np.argmax(Qs)
     return action
   
-  def update_w(self, current_exp) :
-    # Simple update rule
-    _,_,next_state,reward,_ = current_exp
-    error = reward - self.w[next_state]
-    self.w[next_state] += self.learning_rate * error 
-    return error
-
   def update_sr(self, current_exp, next_exp) : 
     # SARSA TD learning rule
     state, action, next_state,reward,terminated = current_exp
@@ -89,7 +77,6 @@ class FocusedDynaSR :
       state = next_state
       if i > 1 : 
         td_sr = self.agent.update_sr(self.experiences[-2],self.experiences[-1])
-        td_w = self.agent.update_w(self.experiences[-1])
         episodic_error.append(np.mean(np.abs(td_sr)))
 
       if terminated : 
