@@ -27,10 +27,10 @@ Peng and Williams : pas vraiment du dyna car ils stockent tout dans une liste al
 - renommer update_model en update_memory
 - changer les structures de stockage 
 - séparer le stockage et le traitement des expériences
-- updateQValue doit vraiment mettre à jour les Qvaleurs pas renvoyer les valeurs qui permettent la mise à jour
+- update_q_value doit vraiment mettre à jour les Qvaleurs pas renvoyer les valeurs qui permettent la mise à jour
 - on peut mettre des éléments de la fonction update_model dans une fonction que l'on mettrait dans PrioritizedReplayAgent (
 	self.PQueue.pop(key)
-    	self.q_table[state,action] = self.updateQValue(state,action,next_state,reward)   
+    	self.q_table[state,action] = self.update_q_value(state,action,next_state,reward)   
     	self.updatePQueue(state)           
 - continuer de travailler sur l'encapsulation et l'héritage
 - finir djikstra

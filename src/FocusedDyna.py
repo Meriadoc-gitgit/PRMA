@@ -20,7 +20,7 @@ class FocusedDyna(PrioritizedReplayAgent) :
     self.stepsFromStart = {self.start : 0}
     self.dijkstra()
 
-  def updatePQueue(self,current_state, action, next_state, reward):
+  def fill_memory(self,experience):
       """
       ajoute dans la priority queue la combinaison action états utilisé pour focused dyna 
       clé : priorité calculé avec la formule proposée par Peng & Williams section 6.1.2
@@ -28,12 +28,14 @@ class FocusedDyna(PrioritizedReplayAgent) :
       Arguments 
       -----------
           mdp -- Mdp from mazemdp.mdp
-          PQueue -- priority queue of the agent- dictionary (state: priority)
+          experience : [state,actio,next_state,reward]
           stepsFromStart -- dictionnary (state : distance_from_start)
 
       """
-      priority = pow(self.mdp.gamma,self.stepsFromStart[current_state]) * self.TD_error(current_state,action,next_state,reward)
-      self.PQueue[priority] = (current_state, action, next_state, reward)
+      [state,action,next_state,reward] = experience
+      priority = pow(self.mdp.gamma,self.stepsFromStart[state]) * self.TD_error(state,action,next_state,reward)
+      heappush(self.memory, (-priority, experience))
+
 
 
   """==============================================================================================================="""
@@ -68,7 +70,7 @@ class FocusedDyna(PrioritizedReplayAgent) :
   
 
   """================== METTRE À JOUR LE MODÈLE =================="""  
-  def update_model(self, state, action, next_state, reward) : 
+  def update_memory(self) : 
     """ Mettre à jour le modèle - instructions correspondantes à la deuxième partie de la boucle
 
         Arguments
@@ -83,24 +85,11 @@ class FocusedDyna(PrioritizedReplayAgent) :
         Returns
         ----------      
     """
-    key = self.key_choice()
-    state, action, next_state, reward = self.PQueue[key]                # on récupère les valeurs de s_t, action, s_t+1, reward (ceux-là ne sont pas ceux en dehors de la boucle)
-    self.PQueue.pop(key)
-    self.q_table[state,action] = self.updateQValue(state,action,next_state,reward)
-    self.updatePQueue(state,action, next_state, reward)
+    (priority, [state, action, next_state, reward]) = heappop(self.memory)
+
+    self.update_q_value(state,action,next_state,reward, 1)   #mise à jour du modele ici on prend le ALPHA de l'agent qu'on s'attend a etre 1
+    self.fill_memory([state,action,next_state,reward])
+    self.add_predecessors(state) 
 
   """==============================================================================================================="""
   
-
-  """================== CHOIX DE CLÉ =================="""  
-  def key_choice(self) : 
-    """ Choix de clé selon l'algorithme pris en entrée
-
-        Arguments
-        ----------
-        
-        Returns   
-        ----------      
-            key -- float : clé choisie selon l'algorithme pris en entrée
-    """ 
-    return max(self.PQueue.keys())  
