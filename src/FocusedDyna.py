@@ -9,6 +9,7 @@ Contient l'algorithme de Focused Dyna
 import heapq
 from heapq import heappop, heappush
 from Algorithms import PrioritizedReplayAgent
+import numpy as np
 
 class FocusedDyna(PrioritizedReplayAgent) : 
   def __init__(self, mdp, ALPHA, DELTA, EPSILON, MAX_STEP ,render, episode) :
@@ -16,9 +17,11 @@ class FocusedDyna(PrioritizedReplayAgent) :
     
     #creation du dictionnaire etat:distance_du_debut
     self.start = self.mdp.reset()[0]
-    self.stepsFromStart = self.dijkstra() 
     self.stepsFromStart = {self.start : 0}
-    self.dijkstra()
+    self.djikstra()
+
+    # self.stepsFromStart = self.dijkstra() 
+    # self.dijkstra()
 
   def fill_memory(self,experience):
       """
@@ -39,35 +42,23 @@ class FocusedDyna(PrioritizedReplayAgent) :
 
 
   """==============================================================================================================="""
-  def dijkstra(self):
-      """
-      Dijkstra's algorithm used to find the shortest distance from the start state to all other states in a graph. 
-      Used for Focused Dyna
+  def djikstra(self):
+    frontier = []
+    visited = set()
+    heappush(frontier,(0,self.start))
+    while frontier :
+       distance, state = heappop(frontier)
 
-      Returns:
-          A dictionary where each state is the key and the value is the distance from the start state.
-      """
-      frontier = []  
-      visited = set()   
+       if state in visited:
+          continue
+       visited.add(state)
+
+       for action in range(self.mdp.action_space.n):
+          next_state = np.argmax(self.mdp.P[state,action])
+          if next_state not in self.stepsFromStart or self.stepsFromStart[next_state] > distance+1:
+             self.stepsFromStart[next_state] = distance +1
+             heappush(frontier,(self.stepsFromStart[next_state], next_state))
     
-      heappush(frontier, (0, self.start))  
-
-      while frontier:
-          current_distance, current_state = heappop(frontier)
-
-          if current_state in visited:
-              continue
-          visited.add(current_state)
-
-          for i in range(4):
-              next_state, _, _, _, _ = self.mdp.step(i)
-              self.mdp.current_state = current_state #not sure if works yet
-              if next_state not in self.stepsFromStart or self.stepsFromStart[next_state] > current_distance + 1:
-                  self.stepsFromStart[next_state] = current_distance + 1
-                  heappush(frontier, (self.stepsFromStart[next_state], next_state))
-  
-  
-  
 
   """================== METTRE À JOUR LE MODÈLE =================="""  
   def update_memory(self) : 
@@ -88,8 +79,8 @@ class FocusedDyna(PrioritizedReplayAgent) :
     (priority, [state, action, next_state, reward]) = heappop(self.memory)
 
     self.update_q_value(state,action,next_state,reward, 1)   #mise à jour du modele ici on prend le ALPHA de l'agent qu'on s'attend a etre 1
-    self.fill_memory([state,action,next_state,reward])
-    self.add_predecessors(state) 
+
+    
 
   """==============================================================================================================="""
   

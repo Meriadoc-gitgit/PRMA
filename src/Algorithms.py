@@ -105,7 +105,7 @@ class PrioritizedReplayAgent:
 
     TD = abs(self.TD_error(state,action,next_state,reward))    # calcul de la différence de magnitude  utilise comme priorite dans la Queue
     if TD:
-      self.update_q_value(state, action, next_state, reward, self.ALPHA)   #backup qu'à partir du moment où on a atteint le goal
+      # self.update_q_value(state, action, next_state, reward, self.ALPHA)   #backup qu'à partir du moment où on a atteint le goal
       self.nb_backup+=1  
     
     experience = [state,action,next_state,reward]
