@@ -60,8 +60,6 @@ class PrioritizedReplayAgent:
             model_name -- str : nom du modèle
         ----------
     """
-    
-
  
     for i in range(self.episode): 
       state, _ = self.mdp.reset()                
