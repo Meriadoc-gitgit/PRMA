@@ -7,11 +7,19 @@ Contient l'algorithme de Largest First
 """
 from Algorithms import PrioritizedReplayAgent
 from heapq import heappop, heappush
+from mazemdp.toolbox import egreedy
 
 
 # Queue Dyna Priority Based on Prediction Difference Magnitude
 
 class LargestFirst(PrioritizedReplayAgent) : 
+
+  def __init__(self, mdp, ALPHA, DELTA, EPSILON, MAX_STEP ,render, episode) :
+    super().__init__(mdp, ALPHA, DELTA, EPSILON, MAX_STEP ,render, episode)
+    
+    #creation du dictionnaire etat:distance_du_debut
+    self.experienced = []
+
 
   def add_predecessors(self, stateForPred):
     """ Ajoute les experiences qui on comme next_state stateForPred
@@ -37,7 +45,7 @@ class LargestFirst(PrioritizedReplayAgent) :
       heappush(self.memory, (-TD, experience))
 
 
-  def update_memory(self):
+  def update_memory(self): 
     (TD, [state, action, next_state, reward]) = heappop(self.memory)
 
     self.update_q_value(state,action,next_state,reward, 1)   #mise à jour du modele ici on prend le ALPHA de l'agent qu'on s'attend a etre 1
@@ -51,3 +59,13 @@ class LargestFirst(PrioritizedReplayAgent) :
         pred.append([state,action,stateForPred, reward])
     return pred
     
+  def handle_step(self, state,action,next_state,reward):
+
+    TD = abs(self.TD_error(state,action,next_state,reward))    # calcul de la différence de magnitude  utilise comme priorite dans la Queue
+    if TD:
+      self.update_q_value(state, action, next_state, reward, self.ALPHA)   #backup qu'à partir du moment où on a atteint le goal
+      self.nb_backup+=1  
+    
+    experience = [state,action,next_state,reward]
+    self.experienced.append(experience) 
+    self.fill_memory(experience)

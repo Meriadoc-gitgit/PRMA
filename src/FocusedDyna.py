@@ -10,59 +10,50 @@ import heapq
 from heapq import heappop, heappush
 from Algorithms import PrioritizedReplayAgent
 import numpy as np
+from mazemdp.toolbox import egreedy
 
 class FocusedDyna(PrioritizedReplayAgent) : 
-  def __init__(self, mdp, ALPHA, DELTA, EPSILON, MAX_STEP ,render, episode) :
-    super().__init__(mdp, ALPHA, DELTA, EPSILON, MAX_STEP ,render, episode)
+    def __init__(self, mdp, ALPHA, DELTA, EPSILON, MAX_STEP ,render, episode) :
+       super().__init__(mdp, ALPHA, DELTA, EPSILON, MAX_STEP ,render, episode)
+       
+       #creation du dictionnaire etat:distance_du_debut
+       self.stepsFromStart = {self.start : 0}
+       self.djikstra()
+       
+    def fill_memory(self,experience):
+        [state,action,next_state,reward] = experience
+        priority = self.compute_priority(state,next_state,reward)
+        heappush(self.memory, (-priority, experience))
+      
+    def compute_priority(self,state,next_state,reward):
+        if state not in self.mdp.terminal_states:
+            max_reward_next_state=np.max(self.q_table[next_state])
+        else:
+            max_reward_next_state = 0
+        return (pow(self.mdp.gamma,self.stepsFromStart[state]))* (reward + max_reward_next_state)
     
-    #creation du dictionnaire etat:distance_du_debut
-    self.start = self.mdp.reset()[0]
-    self.stepsFromStart = {self.start : 0}
-    self.djikstra()
+    """==============================================================================================================="""
+    def djikstra(self):
+        frontier = []
+        visited = set()
+        heappush(frontier,(0,self.start))
+        while frontier :
+            distance, state = heappop(frontier)
 
-    # self.stepsFromStart = self.dijkstra() 
-    # self.dijkstra()
+            if state in visited:
+                continue
+            visited.add(state)
 
-  def fill_memory(self,experience):
-      """
-      ajoute dans la priority queue la combinaison action états utilisé pour focused dyna 
-      clé : priorité calculé avec la formule proposée par Peng & Williams section 6.1.2
-
-      Arguments 
-      -----------
-          mdp -- Mdp from mazemdp.mdp
-          experience : [state,actio,next_state,reward]
-          stepsFromStart -- dictionnary (state : distance_from_start)
-
-      """
-      [state,action,next_state,reward] = experience
-      priority = pow(self.mdp.gamma,self.stepsFromStart[state]) * self.TD_error(state,action,next_state,reward)
-      heappush(self.memory, (-priority, experience))
-
-
-
-  """==============================================================================================================="""
-  def djikstra(self):
-    frontier = []
-    visited = set()
-    heappush(frontier,(0,self.start))
-    while frontier :
-       distance, state = heappop(frontier)
-
-       if state in visited:
-          continue
-       visited.add(state)
-
-       for action in range(self.mdp.action_space.n):
-          next_state = np.argmax(self.mdp.P[state,action])
-          if next_state not in self.stepsFromStart or self.stepsFromStart[next_state] > distance+1:
-             self.stepsFromStart[next_state] = distance +1
-             heappush(frontier,(self.stepsFromStart[next_state], next_state))
+            for action in range(self.mdp.action_space.n):
+                next_state = np.argmax(self.mdp.P[state,action])
+                if next_state not in self.stepsFromStart or self.stepsFromStart[next_state] > distance+1:
+                    self.stepsFromStart[next_state] = distance +1
+                    heappush(frontier,(self.stepsFromStart[next_state], next_state))
     
 
-  """================== METTRE À JOUR LE MODÈLE =================="""  
-  def update_memory(self) : 
-    """ Mettre à jour le modèle - instructions correspondantes à la deuxième partie de la boucle
+    """================== METTRE À JOUR LE MODÈLE =================="""  
+    def update_memory(self) : 
+        """ Mettre à jour le modèle - instructions correspondantes à la deuxième partie de la boucle
 
         Arguments
         ----------
@@ -76,11 +67,18 @@ class FocusedDyna(PrioritizedReplayAgent) :
         Returns
         ----------      
     """
-    (priority, [state, action, next_state, reward]) = heappop(self.memory)
-
-    self.update_q_value(state,action,next_state,reward, 1)   #mise à jour du modele ici on prend le ALPHA de l'agent qu'on s'attend a etre 1
+        (priority, [state, action, next_state, reward]) = heappop(self.memory)
+        self.update_q_value(state,action,next_state,reward, 1)   #mise à jour du modele ici on prend le ALPHA de l'agent qu'on s'attend a etre 1
 
     
 
-  """==============================================================================================================="""
+    """==============================================================================================================="""
   
+    def handle_step(self, state,action,next_state,reward):
+        priority = self.compute_priority(state,next_state, reward)    # calcul de la différence de magnitude  utilise comme priorite dans la Queue
+        if priority:
+            self.update_q_value(state, action, next_state, reward, self.ALPHA)   #backup qu'à partir du moment où on a atteint le goal
+            self.nb_backup+=1  
+    
+        experience = [state,action,next_state,reward]
+        self.fill_memory(experience)

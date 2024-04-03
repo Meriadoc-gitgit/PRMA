@@ -14,7 +14,7 @@ from bbrl_gymnasium.envs.maze_mdp import MazeMDPEnv
 import gymnasium as gym
 from gymnasium.wrappers.monitoring.video_recorder import VideoRecorder
 from IPython.display import Video
-from mazemdp.toolbox import egreedy, egreedy_loc
+from mazemdp.toolbox import egreedy
 from mazemdp.mdp import Mdp as mdp
 import csv
 import os
@@ -40,9 +40,10 @@ class PrioritizedReplayAgent:
     self.render = render
     self.episode = episode
     self.q_table = np.zeros((mdp.nb_states, mdp.action_space.n))   # Q-Table nombre de state x nombre d'action
-    self.memory = []
-    self.experienced=[]
+    self.memory = []  #memoire contient un tri des experiences vecues
     self.nb_backup = 0
+    self.start = self.mdp.reset()[0]
+
 
     self.ALPHA = ALPHA
     self.DELTA = DELTA
@@ -65,21 +66,22 @@ class PrioritizedReplayAgent:
       state, _ = self.mdp.reset()                
       if self.render:
         self.mdp.draw_v_pi(self.q_table, self.q_table.argmax(axis=1), recorder=None)
+      
       for j in range(self.MAX_STEP):
         action, next_state, reward, terminated = self.step_in_world(state)
 
-        if self.memory:                                      #update_model
-          if len(self.memory)>5:                             #pour un pas de temps 5 update 
-            for k in range(4):
-              self.update_memory()
-          self.update_memory()
+        if self.memory:                                      
+          k=5
+          while(k>0 and self.memory):
+            self.update_memory()
+            k-=1
 
         if state in self.mdp.terminal_states:
           break 
-
+        
         state=next_state                     #l'agent est maintenant à l'etat qui succède x
-          
       self.get_nb_step()
+      
 
    
 
@@ -101,14 +103,7 @@ class PrioritizedReplayAgent:
     action = egreedy(self.q_table, state, self.EPSILON)       # choix d'une action avec la méthode EPSILON
     next_state, reward, terminated, truncated, _ = self.mdp.step(action)    # effectue l'action à dans l'environnement
 
-    TD = abs(self.TD_error(state,action,next_state,reward))    # calcul de la différence de magnitude  utilise comme priorite dans la Queue
-    if TD:
-      # self.update_q_value(state, action, next_state, reward, self.ALPHA)   #backup qu'à partir du moment où on a atteint le goal
-      self.nb_backup+=1  
-    
-    experience = [state,action,next_state,reward]
-    self.experienced.append(experience) 
-    self.fill_memory(experience)
+    self.handle_step(state,action,next_state,reward)
     
     return action, next_state, reward, terminated
 
@@ -182,30 +177,20 @@ class PrioritizedReplayAgent:
 
   """==============================================================================================================="""
 
+
   def get_nb_step(self):
-    """ renvoie le nombre de pas de temps que fait l'agent jusqu'au goal
-    """
-    state,_ = self.mdp.reset()  
-    for i in range(self.MAX_STEP):
-      action = np.argmax(self.q_table[state, :])
-      state,_,terminated, _, _ = self.mdp.step(action)
-      if state in self.mdp.terminal_states:
+    state = self.start
+    for nb_step in range(self.MAX_STEP):
+      action = np.argmax(self.q_table[state])
+      next_state = np.argmax(self.mdp.P[state,action])
+      if next_state in self.mdp.terminal_states:
         break
-      
+      state = next_state
+
     with open('executionInformation.csv', mode ='a', newline='') as file:
       writer = csv.writer(file)
-      writer.writerow([self.nb_backup, i])
-     
-  # def get_nb_step(self):
-  #   state = 2
-  #   for i in range(self.MAX_STEP):
-  #     action = np.argmax(self.q_table[state])
-  #     next_state = np.argmax(self.mdp.P[state,action])
-  #     if next_state in self.mdp.terminal_states:
-  #       return i
-  #     state= next_state
+      writer.writerow([self.nb_backup, nb_step])
 
-  #   return i
     
 
       
