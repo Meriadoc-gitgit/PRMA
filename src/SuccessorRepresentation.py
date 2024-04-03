@@ -15,6 +15,17 @@ def onehot(value, max_value) :
 
 class TabularSuccessorAgent : 
   def __init__(self, mdp, learning_rate, EPSILON) : 
+    """ Initialisation de la classe TabularSuccessorAgent
+
+        Arguments
+        ---------
+            mdp -- Mdp de mazemdp.mdp
+            learning_rate -- float : taux d'apprentissage
+            EPSILON -- float : taux d'exploration pour e-greedy
+        
+        Returns
+        ----------      
+    """
     self.mdp = mdp 
     self.learning_rate = learning_rate 
     self.EPSILON = EPSILON
@@ -23,13 +34,31 @@ class TabularSuccessorAgent :
     self.M = np.stack([np.identity(mdp.nb_states) for i in range(mdp.action_space.n)])
     
   def Q_estimates(self, state) : 
-    # Generate Q values for all actions.
+    """ Generer Q values pour toutes actions.
+
+        Arguments
+        ---------
+            state -- int : état courant
+        
+        Returns
+        ----------   
+        Liste de taille action_space.n correspondant à state
+    """
     goal = onehot(self.mdp.terminal_states, self.mdp.nb_states)
     
     return np.matmul(self.M[:,state,:],goal)
 
   def sample_action(self, state) : 
-    # Samples action using EPSILON-greedy approach
+    """ Choisir une action suivant l'approche EPSILON-greedy
+
+        Arguments
+        ---------
+            state -- int : état courant
+        
+        Returns
+        ----------   
+        action choisie
+    """
     if np.random.uniform(0, 1) < self.EPSILON:
       action = np.random.randint(self.mdp.action_space.n)
     else:
@@ -38,7 +67,17 @@ class TabularSuccessorAgent :
     return action
   
   def update_sr(self, current_exp, next_exp) : 
-    # SARSA TD learning rule
+    """ SARSA TD learning rule
+
+        Arguments
+        ---------
+            current_exp -- (state, action, next_state,reward,terminated) : expérience courant
+            next_exp -- (state, action, next_state,reward,terminated) : expérience suivant
+        
+        Returns
+        ----------   
+        1 array de td_error
+    """
     state, action, next_state,reward,terminated = current_exp
     _,next_action,_,_,_ = next_exp
 
@@ -54,6 +93,20 @@ class TabularSuccessorAgent :
 
 class FocusedDynaSR : 
   def __init__(self, mdp, learning_rate, EPSILON, episode, train_episode_length, test_episode_length) : 
+    """ Initialisation de la classe FocusedDynaSR
+
+        Arguments
+        ---------
+            mdp -- Mdp de mazemdp.mdp
+            learning_rate -- float : taux d'apprentissage
+            EPSILON -- float : taux d'exploration pour e-greedy
+            episode -- int : nombre d'épisode pour l'apprentissage
+            train_episode_length -- int : nombre d'épisode pour la phase d'apprentissage
+            test_episode_length -- int : nombre d'épisode pour la phase test
+        
+        Returns
+        ----------      
+    """
     self.mdp = mdp
     self.learning_rate = learning_rate
     self.EPSILON = EPSILON
@@ -67,6 +120,14 @@ class FocusedDynaSR :
     self.test_lengths = []
 
   def train_phase(self) : 
+    """ Phase d'apprentissage
+
+        Arguments
+        ---------
+        
+        Returns
+        ----------      
+    """
     state, _ = self.mdp.reset()
     episodic_error = []
 
@@ -87,6 +148,14 @@ class FocusedDynaSR :
     self.lifetime_td_errors.append(np.mean(episodic_error))
 
   def test_phase(self) : 
+    """ Phase de test
+
+        Arguments
+        ---------
+        
+        Returns
+        ----------      
+    """
     state, _ = self.mdp.reset()
     for i in range(self.test_episode_length) : 
       action = self.agent.sample_action(state) 
@@ -97,6 +166,14 @@ class FocusedDynaSR :
         break
 
   def execute(self) : 
+    """ Excécution de FocusedDynaSR
+
+        Arguments
+        ---------
+        
+        Returns
+        ----------      
+    """
     for i in range(self.episode) : 
       self.train_phase()
       self.test_phase()

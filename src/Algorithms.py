@@ -54,7 +54,7 @@ class PrioritizedReplayAgent:
 
   """================== Excecution =================="""  
   def execute(self) : 
-    """ Excécution de 
+    """ Excécution de PrioritizedReplayAgent
         Arguments
         ----------
             model_name -- str : nom du modèle
