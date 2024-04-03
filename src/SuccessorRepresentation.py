@@ -177,5 +177,8 @@ class FocusedDynaSR :
     for i in range(self.episode) : 
       self.train_phase()
       self.test_phase()
+
+  def optimal_path_length(self) : 
+    return np.min(self.test_lengths)
     
 
