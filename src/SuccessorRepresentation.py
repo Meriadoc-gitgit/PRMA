@@ -142,6 +142,7 @@ class FocusedDynaSR :
         episodic_error.append(np.mean(np.abs(td_sr)))
 
       if terminated : 
+        print("end")
         td_sr = self.agent.update_sr(self.experiences[-1], self.experiences[-1])
         episodic_error.append(np.mean(np.abs(td_sr)))
         break
