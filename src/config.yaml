@@ -2,7 +2,6 @@ main :
   render : False
   epsilon : 0.5
   delta : 0.01
-  gamma : 0.95
   alpha : 0.5
   max_step : 1000
   episode : 2000
