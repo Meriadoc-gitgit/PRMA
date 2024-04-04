@@ -6,6 +6,8 @@ Contient l'intégralité du code de la Successor Representation
 -------------------
 """
 import numpy as np
+import matplotlib.pyplot as plt
+from omegaconf import OmegaConf
 
 
 def onehot(value, max_value) :
@@ -140,7 +142,12 @@ class FocusedDynaSR :
         td_sr = self.agent.update_sr(self.experiences[-2],self.experiences[-1])
         episodic_error.append(np.mean(np.abs(td_sr)))
 
+<<<<<<< Updated upstream
       if state in self.mdp.terminal_states : 
+=======
+      if terminated : 
+        print("end")
+>>>>>>> Stashed changes
         td_sr = self.agent.update_sr(self.experiences[-1], self.experiences[-1])
         episodic_error.append(np.mean(np.abs(td_sr)))
         break
