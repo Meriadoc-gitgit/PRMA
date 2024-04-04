@@ -13,5 +13,5 @@ sr :
     train_episode_length : 1000
     test_episode_length : 200
   grand : 
-    train_episode_length : 50000
+    train_episode_length : 4000
     test_episode_length : 10000
