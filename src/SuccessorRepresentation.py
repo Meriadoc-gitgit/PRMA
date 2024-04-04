@@ -180,6 +180,15 @@ class FocusedDynaSR :
       self.test_phase()
 
   def optimal_path_length(self) : 
+    """ Calculate the optimal path length
+
+        Arguments
+        ---------
+        
+        Returns
+        ----------  
+        Optimal path length
+    """
     return np.min(self.test_lengths)
     
 
