@@ -71,7 +71,7 @@ def main() :
 
   # Algorithme
   if int(program) == 1 : 
-    QueueDyna = LargestFirst(env_9x6, config.main.alpha, config.main.delta, config.main/epsilon,config.main.max_step, config.main.render, config.main.episode)
+    QueueDyna = LargestFirst(env, config.main.alpha, config.main.delta, config.main.epsilon,config.main.max_step, config.main.render, config.main.episode)
     QueueDyna.execute()
 
     data = pd.read_csv("executionInformation.csv")
@@ -90,7 +90,7 @@ def main() :
     plt.show()
 
   elif int(program) == 2 : 
-    RDyna = RandomDyna(env_9x6, config.main.alpha, config.main.delta, config.main/epsilon,config.main.max_step, config.main.render, config.main.episode)
+    RDyna = RandomDyna(env, config.main.alpha, config.main.delta, config.main.epsilon,config.main.max_step, config.main.render, config.main.episode)
     RDyna.execute()
 
     data = pd.read_csv("executionInformation.csv")
