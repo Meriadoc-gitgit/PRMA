@@ -6,7 +6,7 @@ Contient l'algorithme de Random Dyna
 -------------------
 """
 import random
-from Algorithms import PrioritizedReplayAgent
+from PrioritizedReplayAgent import PrioritizedReplayAgent
 from mazemdp.toolbox import egreedy
 
 class RandomDyna(PrioritizedReplayAgent) : 
@@ -50,7 +50,7 @@ class RandomDyna(PrioritizedReplayAgent) :
 
   def handle_step(self, state,action,next_state,reward):
 
-    self.update_q_value(state, action, next_state, reward, self.ALPHA)   #backup qu'à partir du moment où on a atteint le goal
+    self.update_q_value(state, action, next_state, reward, self.alpha)   #backup qu'à partir du moment où on a atteint le goal
     self.nb_backup+=1  
     
     experience = [state,action,next_state,reward]

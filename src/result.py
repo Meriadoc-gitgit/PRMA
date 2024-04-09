@@ -2,7 +2,7 @@ import gymnasium as gym
 import bbrl_gymnasium
 from moviepy.editor import ipython_display as video_display
 from RewardWrapper import RewardWrapper
-from Algorithms import PrioritizedReplayAgent
+from PrioritizedReplayAgent import PrioritizedReplayAgent
 import matplotlib.pyplot as plt
 
 from LargestFirst import LargestFirst

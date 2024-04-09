@@ -8,13 +8,13 @@ Contient l'algorithme de Focused Dyna
 
 import heapq
 from heapq import heappop, heappush
-from Algorithms import PrioritizedReplayAgent
+from PrioritizedReplayAgent import PrioritizedReplayAgent
 import numpy as np
 from mazemdp.toolbox import egreedy
 
 class FocusedDyna(PrioritizedReplayAgent) : 
-    def __init__(self, mdp, ALPHA, DELTA, EPSILON, MAX_STEP ,render, episode) :
-       super().__init__(mdp, ALPHA, DELTA, EPSILON, MAX_STEP ,render, episode)
+    def __init__(self, mdp, alpha, delta, epsilon, max_step ,render, episode) :
+       super().__init__(mdp, alpha, delta, epsilon, max_step ,render, episode)
        
        #creation du dictionnaire etat:distance_du_debut
        self.stepsFromStart = {self.start : 0}
@@ -68,16 +68,30 @@ class FocusedDyna(PrioritizedReplayAgent) :
         ----------      
     """
         (priority, [state, action, next_state, reward]) = heappop(self.memory)
-        self.update_q_value(state,action,next_state,reward, 1)   #mise à jour du modele ici on prend le ALPHA de l'agent qu'on s'attend a etre 1
+        print(state)
+        self.update_q_value(state,action,next_state,reward, 1)
 
     
 
     """==============================================================================================================="""
   
     def handle_step(self, state,action,next_state,reward):
-        priority = self.compute_priority(state,next_state, reward)    # calcul de la différence de magnitude  utilise comme priorite dans la Queue
+        """Effectue la partie propre à Focused Dyna de la gestion d'un pas dans le monde
+
+        Arguments
+        ----------
+            state -- int : état courant
+            action -- int : action à effectuer
+            next_state -- int : état suivant
+            reward -- float : récompense accordée
+
+        
+        Returns
+        ----------      
+    """
+        priority = self.compute_priority(state,next_state, reward)    
         if priority:
-            self.update_q_value(state, action, next_state, reward, self.ALPHA)   #backup qu'à partir du moment où on a atteint le goal
+            self.update_q_value(state, action, next_state, reward, self.alpha)
             self.nb_backup+=1  
     
         experience = [state,action,next_state,reward]

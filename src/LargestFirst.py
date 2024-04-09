@@ -5,7 +5,7 @@ Contient l'algorithme de Largest First
 
 -------------------
 """
-from Algorithms import PrioritizedReplayAgent
+from PrioritizedReplayAgent import PrioritizedReplayAgent
 from heapq import heappop, heappush
 from mazemdp.toolbox import egreedy
 
@@ -14,8 +14,8 @@ from mazemdp.toolbox import egreedy
 
 class LargestFirst(PrioritizedReplayAgent) : 
 
-  def __init__(self, mdp, ALPHA, DELTA, EPSILON, MAX_STEP ,render, episode) :
-    super().__init__(mdp, ALPHA, DELTA, EPSILON, MAX_STEP ,render, episode)
+  def __init__(self, mdp, alpha, delta, epsilon, max_step ,render, episode) :
+    super().__init__(mdp, alpha, delta, epsilon, max_step ,render, episode)
     
     #creation du dictionnaire etat:distance_du_debut
     self.experienced = []
@@ -41,16 +41,16 @@ class LargestFirst(PrioritizedReplayAgent) :
   def fill_memory(self, experience):
      [state,action,next_state,reward] = experience
      TD = abs(self.TD_error(state,action,next_state,reward))
-     if TD >= self.DELTA:
+     if TD >= self.delta:
       heappush(self.memory, (-TD, experience))
 
 
   def update_memory(self): 
     (TD, [state, action, next_state, reward]) = heappop(self.memory)
 
-    self.update_q_value(state,action,next_state,reward, 1)   #mise à jour du modele ici on prend le ALPHA de l'agent qu'on s'attend a etre 1
+    self.update_q_value(state,action,next_state,reward, 1)   #mise à jour du modele ici on prend le alpha de l'agent qu'on s'attend a etre 1
     self.fill_memory([state,action,next_state,reward])
-    self.add_predecessors(state) 
+    # self.add_predecessors(state) 
 
   def find_predecessors(self,stateForPred ):
     pred =[]
@@ -63,7 +63,7 @@ class LargestFirst(PrioritizedReplayAgent) :
 
     TD = abs(self.TD_error(state,action,next_state,reward))    # calcul de la différence de magnitude  utilise comme priorite dans la Queue
     if TD:
-      self.update_q_value(state, action, next_state, reward, self.ALPHA)   #backup qu'à partir du moment où on a atteint le goal
+      self.update_q_value(state, action, next_state, reward, self.alpha)   #backup qu'à partir du moment où on a atteint le goal
       self.nb_backup+=1  
     
     experience = [state,action,next_state,reward]

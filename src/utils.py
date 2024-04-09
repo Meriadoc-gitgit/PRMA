@@ -32,7 +32,7 @@ def get_policy_from_q(q: np.ndarray) -> np.ndarray:
 
 
 """==============================================================================================================="""
-# calcule l'equivalence de DELTA 
+# calcule l'equivalence de delta 
 
 
 def TD_error(mdp, q_table,state,action,next_state,reward):
@@ -58,15 +58,13 @@ def TD_error(mdp, q_table,state,action,next_state,reward):
 
 """==============================================================================================================="""
 
-# a revoir
-
-
-
-
-      
-        
-
-
+def moyenne_par_indice(liste):
+    """Prends une liste de listes et retourne une liste contenant à chaque indice la valeur moyenne des valeurs de cet indice de chaque liste
+    """
+    tableau = np.array(liste)
+    moyennes = np.mean(tableau, axis=0)
+    moyennes = np.where(np.isnan(moyennes), None, moyennes)
+    return moyennes.tolist()
 
 
 

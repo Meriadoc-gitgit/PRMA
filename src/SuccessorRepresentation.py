@@ -15,21 +15,21 @@ def onehot(value, max_value) :
   return vec
 
 class TabularSuccessorAgent : 
-  def __init__(self, mdp, learning_rate, EPSILON) : 
+  def __init__(self, mdp, learning_rate, epsilon) : 
     """ Initialisation de la classe TabularSuccessorAgent
 
         Arguments
         ---------
             mdp -- Mdp de mazemdp.mdp
             learning_rate -- float : taux d'apprentissage
-            EPSILON -- float : taux d'exploration pour e-greedy
+            epsilon -- float : taux d'exploration pour e-greedy
         
         Returns
         ----------      
     """
     self.mdp = mdp 
     self.learning_rate = learning_rate 
-    self.EPSILON = EPSILON
+    self.epsilon = epsilon
 
     # La Successor Representation
     self.M = np.stack([np.identity(mdp.nb_states) for i in range(mdp.action_space.n)])
@@ -50,7 +50,7 @@ class TabularSuccessorAgent :
     return np.matmul(self.M[:,state,:],goal)
 
   def sample_action(self, state) : 
-    """ Choisir une action suivant l'approche EPSILON-greedy
+    """ Choisir une action suivant l'approche epsilon-greedy
 
         Arguments
         ---------
@@ -60,7 +60,7 @@ class TabularSuccessorAgent :
         ----------   
         action choisie
     """
-    if np.random.uniform(0, 1) < self.EPSILON:
+    if np.random.uniform(0, 1) < self.epsilon:
       action = np.random.randint(self.mdp.action_space.n)
     else:
       Qs = self.Q_estimates(state)
@@ -93,14 +93,14 @@ class TabularSuccessorAgent :
 
 
 class FocusedDynaSR : 
-  def __init__(self, mdp, learning_rate, EPSILON, episode, train_episode_length, test_episode_length) : 
+  def __init__(self, mdp, learning_rate, epsilon, episode, train_episode_length, test_episode_length) : 
     """ Initialisation de la classe FocusedDynaSR
 
         Arguments
         ---------
             mdp -- Mdp de mazemdp.mdp
             learning_rate -- float : taux d'apprentissage
-            EPSILON -- float : taux d'exploration pour e-greedy
+            epsilon -- float : taux d'exploration pour e-greedy
             episode -- int : nombre d'épisode pour l'apprentissage
             train_episode_length -- int : nombre d'épisode pour la phase d'apprentissage
             test_episode_length -- int : nombre d'épisode pour la phase test
@@ -110,12 +110,12 @@ class FocusedDynaSR :
     """
     self.mdp = mdp
     self.learning_rate = learning_rate
-    self.EPSILON = EPSILON
+    self.epsilon = epsilon
     self.episode = episode 
     self.train_episode_length = train_episode_length
     self.test_episode_length = test_episode_length
 
-    self.agent = TabularSuccessorAgent(mdp, learning_rate,EPSILON)
+    self.agent = TabularSuccessorAgent(mdp, learning_rate,epsilon)
     self.experiences = []
     self.lifetime_td_errors = []
     self.test_lengths = []
