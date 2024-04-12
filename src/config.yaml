@@ -7,10 +7,10 @@ main :
   episode : 2000
 
 sr : 
-  episode : 500
+  episode : 50
   small : 
-    train_episode_length : 1000
-    test_episode_length : 200
+    train_episode_length : 200
+    test_episode_length : 20
   grand : 
     train_episode_length : 4000
     test_episode_length : 10000

@@ -53,7 +53,8 @@ class FocusedDyna(PrioritizedReplayAgent) :
 
     """================== METTRE À JOUR LE MODÈLE =================="""  
     def update_memory(self) : 
-        """ Mettre à jour le modèle - instructions correspondantes à la deuxième partie de la boucle
+        """
+         Mettre à jour le modèle - instructions correspondantes à la deuxième partie de la boucle
 
         Arguments
         ----------
@@ -76,7 +77,8 @@ class FocusedDyna(PrioritizedReplayAgent) :
     """==============================================================================================================="""
   
     def handle_step(self, state,action,next_state,reward):
-        """Effectue la partie propre à Focused Dyna de la gestion d'un pas dans le monde
+        """
+        Effectue la partie propre à Focused Dyna de la gestion d'un pas dans le monde
 
         Arguments
         ----------
