@@ -69,7 +69,7 @@ class FocusedDyna(PrioritizedReplayAgent) :
         ----------      
     """
         (priority, [state, action, next_state, reward]) = heappop(self.memory)
-        print(state)
+        #print(state)
         self.update_q_value(state,action,next_state,reward, 1)
 
     
