@@ -202,6 +202,9 @@ class FocusedDynaSR(PrioritizedReplayAgent) :
         ----------  
         Optimal path length
     """
+    if len(self.test_lengths) == 0 : 
+      print(self.mdp.terminal_states)
+      return self.test_episode_length
     return np.min(self.test_lengths)
 
   
