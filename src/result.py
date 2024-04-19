@@ -73,7 +73,7 @@ def main() :
 
   # Algorithme
   if int(program) == 1 : 
-    QueueDyna = LargestFirst(env, config.main.alpha, config.main.delta, config.main.epsilon,config.main.max_step, config.main.render, config.main.episode)
+    QueueDyna = LargestFirst(env, config.main.alpha, config.main.delta, config.main.epsilon,config.main.max_step, config.main.render, config.main.nb_episode)
     QueueDyna.execute()
 
     data = pd.read_csv("executionInformation.csv")
@@ -132,4 +132,4 @@ def main() :
   print("Thank you")
   print("\n==============================================================")
 
-main()
+# main()

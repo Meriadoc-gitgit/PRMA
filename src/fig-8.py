@@ -1,6 +1,6 @@
 import gymnasium as gym
 import bbrl_gymnasium
-from moviepy.editor import ipython_display as video_display
+# from moviepy.editor import ipython_display as video_display
 from RewardWrapper import RewardWrapper
 from PrioritizedReplayAgent import PrioritizedReplayAgent
 import matplotlib.pyplot as plt
@@ -24,6 +24,8 @@ delta = config.main.delta  #treshold
 gamma = 0.95  #discount factor
 alpha = config.main.alpha   #learning rate
 max_step = config.main.max_step #nombre de pas maximum pour un episode
+nb_episode = config.main.nb_episode
+render  = config.main.render
 
 # environnement 9x6 
 env_9x6 = gym.make("MazeMDP-v0", kwargs={"width": 9, "height": 6,
@@ -52,7 +54,7 @@ env_18x12.set_no_agent()
 
 print("start")
 
-fdsr = FocusedDynaSR(env_18x12, alpha,delta, epsilon, config.sr.episode,config.main.max_step, config.sr.small.train_episode_length, config.sr.small.test_episode_length)
+fdsr = FocusedDynaSR(env_18x12, alpha,delta, epsilon, config.sr.nb_episode,config.main.max_step, config.sr.small.train_episode_length, config.sr.small.test_episode_length)
 
 def moyenne_par_indice(liste):
     tableau = np.array(liste)
@@ -78,7 +80,7 @@ print("loop")
 
 
 for i in range(nb_exec):
-    QueueDyna = LargestFirst(env_18x12, alpha, delta, epsilon,max_step, render = False, episode= 500)
+    QueueDyna = LargestFirst(env_18x12, alpha, delta, epsilon,max_step, render, nb_episode)
     QueueDyna.execute()
     print(i)
     data = pd.read_csv("executionInformation.csv")
@@ -88,8 +90,7 @@ for i in range(nb_exec):
     all_steps_lg.append(nb_steps[:-2])
     all_backups_lg.append(nb_backup[:-2])
 
-    RDyna = RandomDyna(env_18x12, alpha, delta, epsilon,max_step, render = False, episode= 500)
-    RDyna.execute()
+    RDyna = RandomDyna(env_18x12, alpha, delta, epsilon,max_step, render, nb_episode)
     print(i)
     data = pd.read_csv("executionInformation.csv")
     nb_steps =data.iloc[:, 1].tolist()
@@ -97,7 +98,7 @@ for i in range(nb_exec):
     all_steps_rd.append(nb_steps)
     all_backups_rd.append(nb_backup)
 
-    FDyna = FocusedDyna(env_18x12, alpha, delta, epsilon,max_step, render = False, episode= 500)
+    FDyna = FocusedDyna(env_18x12, alpha, delta, epsilon,max_step, render, nb_episode)
     FDyna.execute()
     data = pd.read_csv("executionInformation.csv")
     print(i)
@@ -118,14 +119,14 @@ for i in range(nb_exec):
 
     
 plt.figure(figsize=(10,5))
-plt.plot(moyenne_par_indice(all_backups_lg), moyenne_par_indice(all_steps_lg), color='red', linewidth=2, label = f"Largest First nb_episode/execution = {QueueDyna.episode}")
+plt.plot(moyenne_par_indice(all_backups_lg), moyenne_par_indice(all_steps_lg), color='red', linewidth=2, label = f"Largest First nb_episode/execution = {QueueDyna.nb_episode}")
 
-plt.plot(moyenne_par_indice(all_backups_rd), moyenne_par_indice(all_steps_rd) ,color='blue', linewidth=2, label = f"Random Dyna nb_episode/execution = {RDyna.episode}")
+plt.plot(moyenne_par_indice(all_backups_rd), moyenne_par_indice(all_steps_rd) ,color='blue', linewidth=2, label = f"Random Dyna nb_episode/execution = {RDyna.nb_episode}")
 
-plt.plot(moyenne_par_indice(all_backups_fc), moyenne_par_indice(all_steps_fc), color='green', linewidth=2, label = f"FocusedDyna nb_episode/execution = {FDyna.episode}")
+plt.plot(moyenne_par_indice(all_backups_fc), moyenne_par_indice(all_steps_fc), color='green', linewidth=2, label = f"FocusedDyna nb_episode/execution = {FDyna.nb_episode}")
 
 
-plt.plot(moyenne_par_indice(all_backups_sr), moyenne_par_indice(all_steps_sr), color='yellow', linewidth=2, label = f"FocusedDyna Successor Representation nb_episode/execution = {fdsr.episode}")
+plt.plot(moyenne_par_indice(all_backups_sr), moyenne_par_indice(all_steps_sr), color='yellow', linewidth=2, label = f"FocusedDyna Successor Representation nb_episode/execution = {fdsr.nb_episode}")
 
 
 print("end")
