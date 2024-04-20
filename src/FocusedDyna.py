@@ -63,7 +63,7 @@ class FocusedDyna(PrioritizedReplayAgent) :
             action -- int : action à effectuer
             next_state -- int : état suivant
             reward -- float : récompense accordée
-
+        ----------      
         
         Returns
         ----------      
