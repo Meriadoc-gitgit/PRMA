@@ -19,26 +19,44 @@ def onehot(value, max_value) :
   vec[value] = 1
   return vec
 
-class TabularSuccessorAgent : 
-  def __init__(self, mdp, learning_rate, epsilon) : 
-    """ Initialisation de la classe TabularSuccessorAgent
+
+class FocusedDynaSR(PrioritizedReplayAgent) : 
+  def __init__(self, mdp, learning_rate, delta, epsilon, episode, max_step, train_episode_length, test_episode_length) : 
+    """ Initialisation de la classe FocusedDynaSR
 
         Arguments
         ---------
             mdp -- Mdp de mazemdp.mdp
             learning_rate -- float : taux d'apprentissage
             epsilon -- float : taux d'exploration pour e-greedy
+            episode -- int : nombre d'épisode pour l'apprentissage
+            train_episode_length -- int : nombre d'épisode pour la phase d'apprentissage
+            test_episode_length -- int : nombre d'épisode pour la phase test
         
         Returns
         ----------      
     """
-    self.mdp = mdp 
-    self.learning_rate = learning_rate 
+    super().__init__(mdp, learning_rate, delta, epsilon, max_step,render=False, episode=episode)
+    
+    self.mdp = mdp
+    self.learning_rate = learning_rate
     self.epsilon = epsilon
+    self.episode = episode 
+    self.train_episode_length = train_episode_length
+    self.test_episode_length = test_episode_length
 
     # La Successor Representation
     self.M = np.stack([np.identity(mdp.nb_states) for i in range(mdp.action_space.n)])
-    
+
+    self.experiences = []
+    self.lifetime_td_errors = []
+    self.test_lengths = []
+
+    self.stepsFromStart = {self.start : 0}
+
+    self.path_length_from_start()
+
+
   def Q_estimates(self, state) : 
     """ Generer Q values pour toutes actions.
 
@@ -65,6 +83,7 @@ class TabularSuccessorAgent :
         ----------   
         action choisie
     """
+    
     if np.random.uniform(0, 1) < self.epsilon:
       action = np.random.randint(self.mdp.action_space.n)
     else:
@@ -97,39 +116,8 @@ class TabularSuccessorAgent :
     return td_error
 
 
-class FocusedDynaSR(PrioritizedReplayAgent) : 
-  def __init__(self, mdp, learning_rate, delta, epsilon, episode, max_step, train_episode_length, test_episode_length) : 
-    """ Initialisation de la classe FocusedDynaSR
 
-        Arguments
-        ---------
-            mdp -- Mdp de mazemdp.mdp
-            learning_rate -- float : taux d'apprentissage
-            epsilon -- float : taux d'exploration pour e-greedy
-            episode -- int : nombre d'épisode pour l'apprentissage
-            train_episode_length -- int : nombre d'épisode pour la phase d'apprentissage
-            test_episode_length -- int : nombre d'épisode pour la phase test
-        
-        Returns
-        ----------      
-    """
-    super().__init__(mdp, learning_rate, delta, epsilon, max_step,render=False, episode=episode)
-    
-    self.mdp = mdp
-    self.learning_rate = learning_rate
-    self.epsilon = epsilon
-    self.episode = episode 
-    self.train_episode_length = train_episode_length
-    self.test_episode_length = test_episode_length
 
-    self.agent = TabularSuccessorAgent(mdp, learning_rate,epsilon)
-    self.experiences = []
-    self.lifetime_td_errors = []
-    self.test_lengths = []
-
-    self.stepsFromStart = {self.start : 0}
-
-    self.path_length_from_start()
 
   def train_phase(self) : 
     """ Phase d'apprentissage
@@ -144,17 +132,17 @@ class FocusedDynaSR(PrioritizedReplayAgent) :
     episodic_error = []
 
     for i in range(self.train_episode_length) : 
-      action = self.agent.sample_action(state) 
+      action = self.sample_action(state) 
       next_state, reward, terminated, truncated,_ = self.mdp.step(action)
       self.experiences.append([state, action, next_state, reward, terminated])
       state = next_state
       if i > 1 : 
-        td_sr = self.agent.update_sr(self.experiences[-2],self.experiences[-1])
+        td_sr = self.update_sr(self.experiences[-2],self.experiences[-1])
         episodic_error.append(np.mean(np.abs(td_sr)))
 
       if terminated : 
         #print("end")
-        td_sr = self.agent.update_sr(self.experiences[-1], self.experiences[-1])
+        td_sr = self.update_sr(self.experiences[-1], self.experiences[-1])
         episodic_error.append(np.mean(np.abs(td_sr)))
         break
       
@@ -171,7 +159,7 @@ class FocusedDynaSR(PrioritizedReplayAgent) :
     """
     state, _ = self.mdp.reset()
     for i in range(self.test_episode_length) : 
-      action = self.agent.sample_action(state) 
+      action = self.sample_action(state) 
       next_state, reward, terminated, truncated,_ = self.mdp.step(action)
       state = next_state
       #if terminated : 
