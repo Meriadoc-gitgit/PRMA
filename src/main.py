@@ -10,6 +10,8 @@ from RandomDyna import RandomDyna
 from FocusedDyna import FocusedDyna
 from SuccessorRepresentation import FocusedDynaSR
 
+from maze import setup_env_9x6
+
 import pandas as pd
 import numpy as np
 
@@ -20,7 +22,7 @@ config = OmegaConf.load("config.yaml")
 
 def main() :
 
-    env = gym.make("MazeMDP-v0", kwargs={"width": 18, "height": 12, "start_states": [4], "walls": [50,51,52,53,54,62,63,64,65,66, 128,129,140,141,168,169,170,171,172,173,180,181,182,183,184,185],"terminal_states": [166,167,178,179]}, render_mode="rgb_array", gamma=0.9)
+    env = setup_env_9x6()
 
     QueueDyna = LargestFirst(env, config.main.alpha, config.main.delta, config.main.epsilon,config.main.max_step, config.main.render, config.main.nb_episode)
     QueueDyna.execute()

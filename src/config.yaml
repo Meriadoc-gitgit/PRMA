@@ -3,6 +3,7 @@ main :
   epsilon : 0.5
   delta : 0.0001
   alpha : 0.5
+  gamma : 0.95
   max_step : 500
   nb_episode : 1000
 
