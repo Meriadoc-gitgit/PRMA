@@ -59,12 +59,11 @@ def main() :
   print("==============================================================\n\n3 programmes à visualiser : \n1. Largest First \n2. Random Dyna\n3. Focused Dyna\n\t1. Avec la Successor Representation\n\t2. Avec Dijsktra\nVeuillez entrer le code indiqué ci-dessus afin d'attribuer l'algorithme à visualiser. \n\n==============================================================\n\n2 maze pour tester : \n\t1. Maze de taille 9x6\n\t2. Maze de taille 18x12\nVeuillez entrer soit 1, soit 2 pour attribuer le maze voulu. \n\n==============================================================\n\nÀ noter : Chaque algo recoit son propre discount factor, afin de visualiser la différence de comportement des agents envers différent discount factor.\n\n==============================================================")
 
   program = input("Enter the name of the algorithm that you want to visualize : ")
-  discount_factor = int(input("Enter the discount factor wanted (in %) : ")) / 100
   maze = input("Enter the maze size wanted : ")
 
 
   print("==============================================================\n")
-  print("You have entered :\nProgramme :",program,"\nDiscount factor :",discount_factor,"\nMaze :",maze)
+  print("You have entered :\nProgramme :",program,"\nMaze :",maze)
   print("\n==============================================================")
 
   # Attribuer le maze indiqué
@@ -94,7 +93,7 @@ def main() :
     plt.show()
 
   elif int(program) == 2 : 
-    RDyna = RandomDyna(env, config.main.alpha, config.main.delta, config.main.epsilon,config.main.max_step, config.main.render, config.main.episode)
+    RDyna = RandomDyna(env, config.main.alpha, config.main.delta, config.main.epsilon,config.main.max_step, config.main.render, config.main.nb_episode)
     RDyna.execute()
 
     data = pd.read_csv("executionInformation.csv")
@@ -117,7 +116,7 @@ def main() :
     print("\n==============================================================")
 
     if int(type_of_FD) == 1 : 
-      fdsr = FocusedDynaSR(env, config.main.alpha, config.main.epsilon, config.sr.episode, config.sr.small.train_episode_length, config.sr.small.test_episode_length)
+      fdsr = FocusedDynaSR(env, config.main.alpha, config.main.epsilon, config.sr.nb_episode, config.sr.small.train_episode_length, config.sr.small.test_episode_length)
       fdsr.execute()
       print("Minimal length of path to goal :",fdsr.optimal_path_length())
       
