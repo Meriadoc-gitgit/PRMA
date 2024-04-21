@@ -48,7 +48,7 @@ def setup_env_36x24() :
                         ,680,681,682,683
                         ,704,705,706,707
                         ,728,729,730,731]},
-    render_mode="rgb_array", gamma=gamma)
+    render_mode="rgb_array", gamma=config.main.gamma)
 
     env_36x24.metadata['render_fps'] = 1
     env_36x24 = RewardWrapper(env_36x24)
