@@ -77,6 +77,7 @@ class PrioritizedReplayAgent:
             k-=1
 
         if state in self.mdp.terminal_states:
+          # print("end")
           break 
         
         state=next_state                     #l'agent est maintenant à l'etat qui succède x

@@ -66,5 +66,10 @@ def moyenne_par_indice(liste):
     moyennes = np.where(np.isnan(moyennes), None, moyennes)
     return moyennes.tolist()
 
+"""==============================================================================================================="""
 
+def onehot(value, max_value) :
+  vec = np.zeros(max_value)
+  vec[value] = 1
+  return vec
 

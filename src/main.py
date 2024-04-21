@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 
 from LargestFirst import LargestFirst
 from RandomDyna import RandomDyna
-from FocusedDyna import FocusedDyna
-from SuccessorRepresentation import FocusedDynaSR
+from DjikstraFD import DjikstraFD
+from SuccessorRepresentationFD import SuccessorRepresentationFD
 
 from maze import setup_env_9x6
 

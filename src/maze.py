@@ -27,3 +27,4 @@ def setup_env_18x12() :
     env_18x12.reset()
 
     env_18x12.set_no_agent()
+    return env_18x12

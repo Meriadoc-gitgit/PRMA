@@ -6,28 +6,18 @@ Contient l'intégralité du code de la Successor Representation
 -------------------
 """
 import numpy as np
-import matplotlib.pyplot as plt
-import heapq
 from heapq import heappop, heappush
-from mazemdp.toolbox import egreedy
+from utils import onehot
+from FocusedDyna import FocusedDyna
 
-from PrioritizedReplayAgent import PrioritizedReplayAgent
-
-
-def onehot(value, max_value) :
-  vec = np.zeros(max_value)
-  vec[value] = 1
-  return vec
-
-
-class FocusedDynaSR(PrioritizedReplayAgent) : 
-  def __init__(self, mdp, learning_rate, delta, epsilon, episode, max_step, train_episode_length, test_episode_length) : 
+class SuccessorRepresentationFD(FocusedDyna) : 
+  def __init__(self, mdp, alpha, delta, epsilon, episode, max_step, train_episode_length, test_episode_length) : 
     """ Initialisation de la classe FocusedDynaSR
 
         Arguments
         ---------
             mdp -- Mdp de mazemdp.mdp
-            learning_rate -- float : taux d'apprentissage
+            alpha -- float : taux d'apprentissage
             epsilon -- float : taux d'exploration pour e-greedy
             episode -- int : nombre d'épisode pour l'apprentissage
             train_episode_length -- int : nombre d'épisode pour la phase d'apprentissage
@@ -36,12 +26,8 @@ class FocusedDynaSR(PrioritizedReplayAgent) :
         Returns
         ----------      
     """
-    super().__init__(mdp, learning_rate, delta, epsilon, max_step,render=False, episode=episode)
-    
-    self.mdp = mdp
-    self.learning_rate = learning_rate
-    self.epsilon = epsilon
-    self.episode = episode 
+    super().__init__(mdp, alpha, delta, epsilon, max_step,render=False, episode=episode)
+    self.alpha = alpha
     self.train_episode_length = train_episode_length
     self.test_episode_length = test_episode_length
 
@@ -49,10 +35,8 @@ class FocusedDynaSR(PrioritizedReplayAgent) :
     self.M = np.stack([np.identity(mdp.nb_states) for i in range(mdp.action_space.n)])
 
     self.experiences = []
-    self.lifetime_td_errors = []
+    self.lifetime_td_errors = []  #a quoi ca sert?
     self.test_lengths = []
-
-    self.stepsFromStart = {self.start : 0}
 
     self.path_length_from_start()
 
@@ -112,7 +96,7 @@ class FocusedDynaSR(PrioritizedReplayAgent) :
 
     else : 
       td_error = I + self.mdp.gamma * self.M[next_action,next_state] - self.M[action,state]
-    self.M[action,state] += self.learning_rate * td_error 
+    self.M[action,state] += self.alpha * td_error 
     return td_error
 
 
@@ -197,7 +181,7 @@ class FocusedDynaSR(PrioritizedReplayAgent) :
 
   
   def path_length_from_start(self) : 
-    
+    true_terminal_states = self.mdp.terminal_states
     for state_goal in range(1, self.mdp.nb_states) : 
       state, _ = self.mdp.reset()
       self.lifetime_td_errors = []
@@ -206,65 +190,11 @@ class FocusedDynaSR(PrioritizedReplayAgent) :
       self.trial()
       self.stepsFromStart[state_goal] = self.optimal_path_length()
       #print(state_goal, self.stepsFromStart[state_goal])
+    self.mdp.terminal_states = true_terminal_states 
+    #derniere ligne : on a besoin de ca sinon le terminal states corresponds
+    #au dernier état et non pas au réel dernier état ce qui pose problème quand 
+    #on fait execute de Prioritized replay agent
+    #solution pas très propre/temporaire il vaudrait mieux ne pas toucher au terminal_states
+    
 
 
-
-
-
-  def fill_memory(self,experience):
-        [state,action,next_state,reward] = experience
-        priority = self.compute_priority(state,next_state,reward)
-        heappush(self.memory, (-priority, experience))
-      
-  def compute_priority(self,state,next_state,reward):
-      if state not in self.mdp.terminal_states:
-          max_reward_next_state=np.max(self.q_table[next_state])
-      else:
-          max_reward_next_state = 0
-      return (pow(self.mdp.gamma,self.stepsFromStart[state]))* (reward + max_reward_next_state)
-
-  """================== METTRE À JOUR LE MODÈLE =================="""  
-  def update_memory(self) : 
-      """
-        Mettre à jour le modèle - instructions correspondantes à la deuxième partie de la boucle
-
-      Arguments
-      ----------
-          algo -- str : nom de l'algorithme choisie 
-          state -- int : état courant
-          action -- int : action à effectuer
-          next_state -- int : état suivant
-          reward -- float : récompense accordée
-
-      
-      Returns
-      ----------      
-  """
-      (priority, [state, action, next_state, reward]) = heappop(self.memory)
-      print(state)
-      self.update_q_value(state,action,next_state,reward, 1)
-
-  """==============================================================================================================="""
-  
-  def handle_step(self, state,action,next_state,reward):
-    """
-      Effectue la partie propre à Focused Dyna de la gestion d'un pas dans le monde
-
-      Arguments
-      ----------
-          state -- int : état courant
-          action -- int : action à effectuer
-          next_state -- int : état suivant
-          reward -- float : récompense accordée
-
-      
-      Returns
-      ----------      
-    """
-    priority = self.compute_priority(state,next_state, reward)    
-    if priority:
-        self.update_q_value(state, action, next_state, reward, self.alpha)
-        self.nb_backup+=1  
-
-    experience = [state,action,next_state,reward]
-    self.fill_memory(experience)

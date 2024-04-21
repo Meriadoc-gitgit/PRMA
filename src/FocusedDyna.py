@@ -6,7 +6,6 @@ Contient l'algorithme de Focused Dyna
 -------------------
 """
 
-import heapq
 from heapq import heappop, heappush
 from PrioritizedReplayAgent import PrioritizedReplayAgent
 import numpy as np
@@ -18,7 +17,6 @@ class FocusedDyna(PrioritizedReplayAgent) :
        
        #creation du dictionnaire etat:distance_du_debut
        self.stepsFromStart = {self.start : 0}
-       self.djikstra()
        
     def fill_memory(self,experience):
         [state,action,next_state,reward] = experience
@@ -30,27 +28,8 @@ class FocusedDyna(PrioritizedReplayAgent) :
             max_reward_next_state=np.max(self.q_table[next_state])
         else:
             max_reward_next_state = 0
-        return (pow(self.mdp.gamma,self.stepsFromStart[state]))* (reward + max_reward_next_state)
+        return (pow(self.mdp.gamma,self.stepsFromStart[state]))* (reward + self.mdp.gamma*max_reward_next_state)
     
-    """==============================================================================================================="""
-    def djikstra(self):
-        frontier = []
-        visited = set()
-        heappush(frontier,(0,self.start))
-        while frontier :
-            distance, state = heappop(frontier)
-
-            if state in visited:
-                continue
-            visited.add(state)
-
-            for action in range(self.mdp.action_space.n):
-                next_state = np.argmax(self.mdp.P[state,action])
-                if next_state not in self.stepsFromStart or self.stepsFromStart[next_state] > distance+1:
-                    self.stepsFromStart[next_state] = distance +1
-                    heappush(frontier,(self.stepsFromStart[next_state], next_state))
-    
-
     """================== METTRE À JOUR LE MODÈLE =================="""  
     def update_memory(self) : 
         """

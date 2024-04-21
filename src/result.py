@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 
 from LargestFirst import LargestFirst
 from RandomDyna import RandomDyna
-from FocusedDyna import FocusedDyna
-from SuccessorRepresentation import FocusedDynaSR
+from DjikstraFD import DjikstraFD
+from SuccessorRepresentationFD import SuccessorRepresentationFD
 
 from maze import setup_env_9x6, setup_env_18x12
 
@@ -116,7 +116,7 @@ def main() :
     print("\n==============================================================")
 
     if int(type_of_FD) == 1 : 
-      fdsr = FocusedDynaSR(env, config.main.alpha, config.main.epsilon, config.sr.nb_episode, config.sr.small.train_episode_length, config.sr.small.test_episode_length)
+      fdsr = SuccessorRepresentationFD(env, config.main.alpha, config.main.epsilon, config.sr.nb_episode, config.sr.small.train_episode_length, config.sr.small.test_episode_length)
       fdsr.execute()
       print("Minimal length of path to goal :",fdsr.optimal_path_length())
       
