@@ -8,7 +8,7 @@ from RandomDyna import RandomDyna
 from DjikstraFD import DjikstraFD
 from SuccessorRepresentationFD import SuccessorRepresentationFD
 
-from maze import setup_env_9x6           
+from maze import setup_env_36x24      
 from utils import moyenne_par_indice        
 from scipy.interpolate import interp1d     
 
@@ -19,11 +19,11 @@ from omegaconf import OmegaConf
 config = OmegaConf.load("src/config.yaml")
 
 #Create result directory
-if not os.path.exists('src/output'):
-    os.makedirs('output_res')
+if not os.path.exists('src/res'):
+    os.makedirs('src/res')
 output_path = 'src/res/figure.png'
 
-env = setup_env_9x6()
+env = setup_env_36x24()
 
 #largest first
 all_steps_lg = []
@@ -64,10 +64,10 @@ for i in range(nb_exec):
     all_steps_rd.append(nb_steps)
     all_backups_rd.append(nb_backup)
 
-    DjikstraFD = DjikstraFD(env, config.main.alpha, config.main.delta, 
+    Djikstra = DjikstraFD(env, config.main.alpha, config.main.delta, 
                             config.main.epsilon,config.main.max_step, 
                             config.main.render, config.main.nb_episode)
-    DjikstraFD.execute()
+    Djikstra.execute()
     data = pd.read_csv("executionInformation.csv")
     print(i)
     nb_steps = data.iloc[:, 1].tolist()
@@ -76,11 +76,11 @@ for i in range(nb_exec):
     all_backups_dfd.append(nb_backup)
 
 
-    SuccessorRepresentationFD = SuccessorRepresentationFD(env, config.main.alpha,config.main.delta, 
+    SR = SuccessorRepresentationFD(env, config.main.alpha,config.main.delta, 
                                                           config.main.epsilon, config.sr.nb_episode,
-                                                          config.main.max_step, config.sr.small.train_episode_length, 
-                                                          config.sr.small.test_episode_length)
-    SuccessorRepresentationFD.execute()
+                                                          config.main.max_step, config.sr.grand.train_episode_length, 
+                                                          config.sr.grand.test_episode_length)
+    SR.execute()
     data = pd.read_csv("executionInformation.csv")
     print(i)
     nb_steps = data.iloc[:, 1].tolist()
@@ -93,10 +93,10 @@ plt.plot(moyenne_par_indice(all_backups_lg), moyenne_par_indice(all_steps_lg), c
 
 plt.plot(moyenne_par_indice(all_backups_rd), moyenne_par_indice(all_steps_rd) ,color='blue', linewidth=2, label = f"Random Dyna nb_episode/execution = {RDyna.episode}")
 
-plt.plot(moyenne_par_indice(all_backups_dfd), moyenne_par_indice(all_steps_dfd), color='green', linewidth=2, label = f"FocusedDyna avec Djikstra nb_episode/execution = {DjikstraFD.episode}")
+plt.plot(moyenne_par_indice(all_backups_dfd), moyenne_par_indice(all_steps_dfd), color='green', linewidth=2, label = f"FocusedDyna avec Djikstra nb_episode/execution = {Djikstra.episode}")
 
 
-plt.plot(moyenne_par_indice(all_backups_srfd), moyenne_par_indice(all_steps_srfd), color='orange', linewidth=2, label = f"FocusedDyna avec Successor Representation nb_episode/execution = {SuccessorRepresentationFD.episode}")
+plt.plot(moyenne_par_indice(all_backups_srfd), moyenne_par_indice(all_steps_srfd), color='orange', linewidth=2, label = f"FocusedDyna avec Successor Representation nb_episode/execution = {SR.episode}")
 
 
 
@@ -107,6 +107,5 @@ plt.xscale('log')
 plt.legend(loc='best')
 plt.grid(True)
 plt.savefig(output_path)
-plt.show()
 
 
