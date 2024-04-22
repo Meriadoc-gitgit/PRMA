@@ -2,7 +2,7 @@ import gymnasium as gym
 from RewardWrapper import RewardWrapper
 from omegaconf import OmegaConf
 # Load YAML config file as DictConfig
-config = OmegaConf.load("config.yaml")
+config = OmegaConf.load("src/config.yaml")
 
 def setup_env_9x6():
     env_9x6 = gym.make("MazeMDP-v0", kwargs={"width": 9, "height": 6,"start_states": [2],"walls": [13, 14, 15, 34, 42, 43, 44],
@@ -12,7 +12,7 @@ def setup_env_9x6():
 
     env_9x6.reset()
 
-    env_9x6.set_no_agent()
+    env_9x6.unwrapped.set_no_agent()
 
     return env_9x6
 
@@ -26,7 +26,7 @@ def setup_env_18x12() :
 
     env_18x12.reset()
 
-    env_18x12.set_no_agent()
+    env_18x12.unwrapped.set_no_agent()
     return env_18x12
 
 def setup_env_36x24() :
@@ -54,5 +54,5 @@ def setup_env_36x24() :
     env_36x24 = RewardWrapper(env_36x24)
     env_36x24.reset()
 
-    env_36x24.set_no_agent()
+    env_36x24.unwrapped.set_no_agent()
     return env_36x24

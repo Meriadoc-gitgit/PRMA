@@ -24,11 +24,11 @@ class FocusedDyna(PrioritizedReplayAgent) :
         heappush(self.memory, (-priority, experience))
       
     def compute_priority(self,state,next_state,reward):
-        if state not in self.mdp.terminal_states:
+        if state not in self.mdp.unwrapped.terminal_states:
             max_reward_next_state=np.max(self.q_table[next_state])
         else:
             max_reward_next_state = 0
-        return (pow(self.mdp.gamma,self.stepsFromStart[state]))* (reward + self.mdp.gamma*max_reward_next_state)
+        return (pow(self.mdp.unwrapped.gamma,self.stepsFromStart[state]))* (reward + self.mdp.unwrapped.gamma*max_reward_next_state)
     
     """================== METTRE À JOUR LE MODÈLE =================="""  
     def update_memory(self) : 

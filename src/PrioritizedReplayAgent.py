@@ -39,7 +39,7 @@ class PrioritizedReplayAgent:
     self.mdp = mdp
     self.render = render
     self.episode = episode
-    self.q_table = np.zeros((mdp.nb_states, mdp.action_space.n))   # Q-Table nombre de state x nombre d'action
+    self.q_table = np.zeros((mdp.unwrapped.nb_states, mdp.action_space.n))   # Q-Table nombre de state x nombre d'action
     self.memory = []  #memoire contient un tri des experiences vecues
     self.nb_backup = 0
     self.start = self.mdp.reset()[0]
@@ -76,7 +76,7 @@ class PrioritizedReplayAgent:
             self.update_memory()
             k-=1
 
-        if state in self.mdp.terminal_states:
+        if state in self.mdp.unwrapped.terminal_states:
           # print("end")
           break 
         
@@ -121,15 +121,15 @@ class PrioritizedReplayAgent:
         
         Returns
         ----------      
-            q_table[x,a] + alpha*(r+mdp.gamma*v_y-q_table[x,a])
+            q_table[x,a] + alpha*(r+mdp.unwrapped.gamma*v_y-q_table[x,a])
     """
     #v_y correspond à la valeur maximal estimee pour l'etat y, multiplication par 1-terminated pour s'assurer de
     #ne prendre en compte ce resultat que si l'etat y n'est pas successeur d'un etat terminal
     v_y = 0
-    if state not in self.mdp.terminal_states:
+    if state not in self.mdp.unwrapped.terminal_states:
       v_y =np.max(self.q_table[next_state])
 
-    self.q_table[state,action] = self.q_table[state,action] + alpha*(reward + self.mdp.gamma * v_y - self.q_table[state,action])
+    self.q_table[state,action] = self.q_table[state,action] + alpha*(reward + self.mdp.unwrapped.gamma * v_y - self.q_table[state,action])
    
 
   """==============================================================================================================="""
@@ -166,14 +166,14 @@ class PrioritizedReplayAgent:
           
           Returns
           ----------      
-              reward + mdp.gamma* max_reward_next_state- q_table[state,action]
+              reward + mdp.unwrapped.gamma* max_reward_next_state- q_table[state,action]
       """
-      if state not in self.mdp.terminal_states:
+      if state not in self.mdp.unwrapped.terminal_states:
         max_reward_next_state=np.max(self.q_table[next_state])
       else:
         max_reward_next_state = 0
       
-      return reward + self.mdp.gamma * max_reward_next_state - self.q_table[state,action]
+      return reward + self.mdp.unwrapped.gamma * max_reward_next_state - self.q_table[state,action]
 
 
   """==============================================================================================================="""
@@ -183,8 +183,8 @@ class PrioritizedReplayAgent:
     state = self.start
     for nb_step in range(self.max_step):
       action = np.argmax(self.q_table[state])
-      next_state = np.argmax(self.mdp.P[state,action])
-      if next_state in self.mdp.terminal_states:
+      next_state = np.argmax(self.mdp.unwrapped.P[state,action])
+      if next_state in self.mdp.unwrapped.terminal_states:
         break
       state = next_state
 

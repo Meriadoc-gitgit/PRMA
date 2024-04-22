@@ -31,7 +31,7 @@ class DjikstraFD(FocusedDyna) :
             visited.add(state)
 
             for action in range(self.mdp.action_space.n):
-                next_state = np.argmax(self.mdp.P[state,action])
+                next_state = np.argmax(self.mdp.unwrapped.P[state,action])
                 if next_state not in self.stepsFromStart or self.stepsFromStart[next_state] > distance+1:
                     self.stepsFromStart[next_state] = distance +1
                     heappush(frontier,(self.stepsFromStart[next_state], next_state))

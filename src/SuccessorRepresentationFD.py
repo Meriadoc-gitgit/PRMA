@@ -32,7 +32,7 @@ class SuccessorRepresentationFD(FocusedDyna) :
     self.test_episode_length = test_episode_length
 
     # La Successor Representation
-    self.M = np.stack([np.identity(mdp.nb_states) for i in range(mdp.action_space.n)])
+    self.M = np.stack([np.identity(mdp.unwrapped.nb_states) for i in range(mdp.action_space.n)])
 
     self.experiences = []
     self.lifetime_td_errors = []  #a quoi ca sert?
@@ -52,7 +52,7 @@ class SuccessorRepresentationFD(FocusedDyna) :
         ----------   
         Liste de taille action_space.n correspondant à state
     """
-    goal = onehot(self.mdp.terminal_states, self.mdp.nb_states)
+    goal = onehot(self.mdp.unwrapped.terminal_states, self.mdp.unwrapped.nb_states)
     
     return np.matmul(self.M[:,state,:],goal)
 
@@ -90,17 +90,14 @@ class SuccessorRepresentationFD(FocusedDyna) :
     state, action, next_state,reward,terminated = current_exp
     _,next_action,_,_,_ = next_exp
 
-    I = onehot(state, self.mdp.nb_states)
+    I = onehot(state, self.mdp.unwrapped.nb_states)
     if terminated : 
-      td_error = I + self.mdp.gamma * onehot(next_state, self.mdp.nb_states) - self.M[action,state]
+      td_error = I + self.mdp.unwrapped.gamma * onehot(next_state, self.mdp.unwrapped.nb_states) - self.M[action,state]
 
     else : 
-      td_error = I + self.mdp.gamma * self.M[next_action,next_state] - self.M[action,state]
+      td_error = I + self.mdp.unwrapped.gamma * self.M[next_action,next_state] - self.M[action,state]
     self.M[action,state] += self.alpha * td_error 
     return td_error
-
-
-
 
 
   def train_phase(self) : 
@@ -147,7 +144,7 @@ class SuccessorRepresentationFD(FocusedDyna) :
       next_state, reward, terminated, truncated,_ = self.mdp.step(action)
       state = next_state
       #if terminated : 
-      if next_state in self.mdp.terminal_states :
+      if next_state in self.mdp.unwrapped.terminal_states :
         self.test_lengths.append(i+1)
         break
 
@@ -175,22 +172,22 @@ class SuccessorRepresentationFD(FocusedDyna) :
         Optimal path length
     """
     if len(self.test_lengths) == 0 : 
-      print(self.mdp.terminal_states)
+      print(self.mdp.unwrapped.terminal_states)
       return self.test_episode_length
     return np.min(self.test_lengths)
 
   
   def path_length_from_start(self) : 
-    true_terminal_states = self.mdp.terminal_states
-    for state_goal in range(1, self.mdp.nb_states) : 
+    true_terminal_states = self.mdp.unwrapped.terminal_states
+    for state_goal in range(1, self.mdp.unwrapped.nb_states) : 
       state, _ = self.mdp.reset()
       self.lifetime_td_errors = []
       self.test_lengths = []
-      self.mdp.terminal_states = [state_goal]
+      self.mdp.unwrapped.terminal_states = [state_goal]
       self.trial()
       self.stepsFromStart[state_goal] = self.optimal_path_length()
       #print(state_goal, self.stepsFromStart[state_goal])
-    self.mdp.terminal_states = true_terminal_states 
+    self.mdp.unwrapped.terminal_states = true_terminal_states 
     #derniere ligne : on a besoin de ca sinon le terminal states corresponds
     #au dernier état et non pas au réel dernier état ce qui pose problème quand 
     #on fait execute de Prioritized replay agent

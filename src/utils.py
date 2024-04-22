@@ -49,11 +49,11 @@ def TD_error(mdp, q_table,state,action,next_state,reward):
         
         Returns
         ----------      
-            reward + mdp.gamma* max_reward_next_state- q_table[state,action]
+            reward + mdp.unwrapped.gamma* max_reward_next_state- q_table[state,action]
     """
-    terminated = state in mdp.terminal_states
+    terminated = state in mdp.unwrapped.terminal_states
     max_reward_next_state = np.max(q_table[int(next_state),:])*(1-terminated)                # retourne la valeur max estimee de next state
-    return reward + mdp.gamma* max_reward_next_state- q_table[state,action]
+    return reward + mdp.unwrapped.gamma* max_reward_next_state- q_table[state,action]
 
 
 """==============================================================================================================="""

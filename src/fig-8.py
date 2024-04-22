@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from LargestFirst import LargestFirst
 from RandomDyna import RandomDyna
 from FocusedDyna import FocusedDyna
-from SuccessorRepresentation import FocusedDynaSR
+from SuccessorRepresentationFD import SuccessorRepresentationFD
 
 import pandas as pd
 import numpy as np
@@ -24,7 +24,8 @@ delta = config.main.delta  #treshold
 gamma = 0.95  #discount factor
 alpha = config.main.alpha   #learning rate
 max_step = config.main.max_step #nombre de pas maximum pour un episode
-nb_episode = config.main.nb_episode
+# nb_episode = config.main.nb_episode
+nb_episode = 5
 render  = config.main.render
 
 # environnement 9x6 
@@ -54,7 +55,7 @@ env_18x12.set_no_agent()
 
 print("start")
 
-fdsr = FocusedDynaSR(env_18x12, alpha,delta, epsilon, config.sr.nb_episode,config.main.max_step, config.sr.small.train_episode_length, config.sr.small.test_episode_length)
+fdsr = SuccessorRepresentationFD(env_18x12, alpha,delta, epsilon, config.sr.nb_episode,config.main.max_step, config.sr.small.train_episode_length, config.sr.small.test_episode_length)
 
 def moyenne_par_indice(liste):
     tableau = np.array(liste)
@@ -68,8 +69,8 @@ all_backups_lg = []
 all_steps_rd = []
 all_backups_rd = []
 
-all_steps_fc = []
-all_backups_fc = []
+all_steps_dfd = []
+all_backups_dfd = []
 
 all_steps_sr = []
 all_backups_sr = []
@@ -104,8 +105,8 @@ for i in range(nb_exec):
     print(i)
     nb_steps = data.iloc[:, 1].tolist()
     nb_backup = data.iloc[:,0].tolist()
-    all_steps_fc.append(nb_steps)
-    all_backups_fc.append(nb_backup)
+    all_steps_dfd.append(nb_steps)
+    all_backups_dfd.append(nb_backup)
 
 
     
@@ -123,7 +124,7 @@ plt.plot(moyenne_par_indice(all_backups_lg), moyenne_par_indice(all_steps_lg), c
 
 plt.plot(moyenne_par_indice(all_backups_rd), moyenne_par_indice(all_steps_rd) ,color='blue', linewidth=2, label = f"Random Dyna nb_episode/execution = {RDyna.nb_episode}")
 
-plt.plot(moyenne_par_indice(all_backups_fc), moyenne_par_indice(all_steps_fc), color='green', linewidth=2, label = f"FocusedDyna nb_episode/execution = {FDyna.nb_episode}")
+plt.plot(moyenne_par_indice(all_backups_dfd), moyenne_par_indice(all_steps_dfd), color='green', linewidth=2, label = f"FocusedDyna nb_episode/execution = {FDyna.nb_episode}")
 
 
 plt.plot(moyenne_par_indice(all_backups_sr), moyenne_par_indice(all_steps_sr), color='yellow', linewidth=2, label = f"FocusedDyna Successor Representation nb_episode/execution = {fdsr.nb_episode}")
@@ -136,5 +137,5 @@ plt.ylabel('nb_step')
 plt.xscale('log')
 plt.legend(loc='best')
 plt.grid(True)
-#plt.savefig("img/fig-8.png")
-plt.show()
+plt.savefig("img/fig-8-test.png")
+# plt.show()
