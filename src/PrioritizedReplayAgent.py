@@ -134,50 +134,6 @@ class PrioritizedReplayAgent:
 
   """==============================================================================================================="""
 
-  def get_policy_from_q(q: np.ndarray) -> np.ndarray:
-      """ 
-          Arguments
-          ----------
-              q -- np.ndarray
-          
-          Returns
-          ----------      
-              policy -- np.ndarray
-      """
-      # Outputs a policy given the action values
-      policy = np.zeros(len(q), dtype=int)
-      for x in range(len(q)) : 
-          policy[x] = np.argmax(q[x,:])                  
-      return policy   
-
-  """==============================================================================================================="""
-  # calcule l'equivalence de delta 
-
-
-  def TD_error(self,state,action,next_state,reward):
-      """ Mets à jour le modele #explication insuffisante
-
-          Arguments
-          ----------
-              state -- int : etat d'origine
-              action -- int : action effectue
-              next_state -- int : etat d'arrivee
-              reward -- float : recompense recue
-          
-          Returns
-          ----------      
-              reward + mdp.unwrapped.gamma* max_reward_next_state- q_table[state,action]
-      """
-      if state not in self.mdp.unwrapped.terminal_states:
-        max_reward_next_state=np.max(self.q_table[next_state])
-      else:
-        max_reward_next_state = 0
-      
-      return reward + self.mdp.unwrapped.gamma * max_reward_next_state - self.q_table[state,action]
-
-
-  """==============================================================================================================="""
-
 
   def get_nb_step(self):
     state = self.start

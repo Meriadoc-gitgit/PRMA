@@ -27,7 +27,7 @@ class SuccessorRepresentationFD(FocusedDyna) :
         ----------      
     """
     super().__init__(mdp, alpha, delta, epsilon, max_step,render=False, episode=episode)
-    self.alpha = alpha
+    # self.alpha = alpha
     self.train_episode_length = train_episode_length
     self.test_episode_length = test_episode_length
 

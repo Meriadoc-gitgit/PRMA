@@ -9,6 +9,8 @@ from PrioritizedReplayAgent import PrioritizedReplayAgent
 from heapq import heappop, heappush
 from mazemdp.toolbox import egreedy
 from collections import defaultdict
+import numpy as np
+
 
 
 # Queue Dyna Priority Based on Prediction Difference Magnitude
@@ -87,7 +89,7 @@ class LargestFirst(PrioritizedReplayAgent) :
     ----------  
     """
 
-    TD = abs(self.TD_error(state,action,next_state,reward))    # calcul de la différence de magnitude  utilise comme priorite dans la Queue
+    TD = abs(self.TD_error( state,action,next_state,reward))    # calcul de la différence de magnitude  utilise comme priorite dans la Queue
     if TD:
       self.update_q_value(state, action, next_state, reward, self.alpha)   #backup qu'à partir du moment où on a atteint le goal
       self.nb_backup+=1  
@@ -108,3 +110,24 @@ class LargestFirst(PrioritizedReplayAgent) :
     """
     state, action , next_state, reward = experience
     self.experienced[next_state].append(experience)
+
+  def TD_error(self,state,action,next_state,reward):
+    """ Mets à jour le modele #explication insuffisante
+
+        Arguments
+        ----------
+            state -- int : etat d'origine
+            action -- int : action effectue
+            next_state -- int : etat d'arrivee
+            reward -- float : recompense recue
+        
+        Returns
+        ----------      
+            reward + mdp.unwrapped.gamma* max_reward_next_state- q_table[state,action]
+    """
+    if state not in self.mdp.unwrapped.terminal_states:
+      max_reward_next_state=np.max(self.q_table[next_state])
+    else:
+      max_reward_next_state = 0
+    
+    return reward + self.mdp.unwrapped.gamma * max_reward_next_state - self.q_table[state,action]

@@ -13,7 +13,7 @@ import numpy as np
 
 
 """==============================================================================================================="""
-
+#in utilise pas cette fonction soit l'integrer dans le code soit la supprimer si inutile
 def get_policy_from_q(q: np.ndarray) -> np.ndarray:
     """ 
         Arguments
@@ -29,31 +29,6 @@ def get_policy_from_q(q: np.ndarray) -> np.ndarray:
     for x in range(len(q)) : 
         policy[x] = np.argmax(q[x,:])                  
     return policy   
-
-
-"""==============================================================================================================="""
-# calcule l'equivalence de delta 
-
-
-def TD_error(mdp, q_table,state,action,next_state,reward):
-    """ Mets à jour le modele 
-
-        Arguments
-        ----------
-            mdp -- Mdp from mazemdp.mdp : environnement
-            q_table : modele
-            state -- int : etat d'origine
-            action -- int : action effectue
-            next_state -- int : etat d'arrivee
-            reward -- float : recompense recue
-        
-        Returns
-        ----------      
-            reward + mdp.unwrapped.gamma* max_reward_next_state- q_table[state,action]
-    """
-    terminated = state in mdp.unwrapped.terminal_states
-    max_reward_next_state = np.max(q_table[int(next_state),:])*(1-terminated)                # retourne la valeur max estimee de next state
-    return reward + mdp.unwrapped.gamma* max_reward_next_state- q_table[state,action]
 
 
 """==============================================================================================================="""
