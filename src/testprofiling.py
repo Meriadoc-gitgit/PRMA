@@ -38,12 +38,12 @@ all_backups_dfd = []
 all_steps_srfd = []
 all_backups_srfd = []
 
-nb_exec = 2
+nb_exec = config.test.nb_execution
 
 for i in range(nb_exec):
-    QueueDyna = LargestFirst(env, config.main.alpha, config.main.delta, 
-                             config.main.epsilon,20, 
-                             config.main.render, 20)
+    QueueDyna = LargestFirst(env, config.test.alpha, config.test.delta, 
+                             config.test.epsilon,config.test.max_step, 
+                             config.test.render, config.test.nb_episode)
     QueueDyna.execute()
     print(i)
     data = pd.read_csv("executionInformation.csv")
@@ -53,9 +53,9 @@ for i in range(nb_exec):
     all_steps_lg.append(nb_steps[:-2])
     all_backups_lg.append(nb_backup[:-2])
 
-    RDyna = RandomDyna(env, config.main.alpha, config.main.delta, 
-                       config.main.epsilon,20, config.main.render, 
-                       20)
+    RDyna = RandomDyna(env, config.test.alpha, config.test.delta, 
+                       config.test.epsilon,2, config.test.render, 
+                       config.test.nb_episode)
     RDyna.execute()
     print(i)
     data = pd.read_csv("executionInformation.csv")
@@ -64,9 +64,9 @@ for i in range(nb_exec):
     all_steps_rd.append(nb_steps)
     all_backups_rd.append(nb_backup)
 
-    Djikstra = DjikstraFD(env, config.main.alpha, config.main.delta, 
-                            config.main.epsilon,20, 
-                            config.main.render, 20)
+    Djikstra = DjikstraFD(env, config.test.alpha, config.test.delta, 
+                          config.test.epsilon,2, config.test.render, 
+                          config.test.nb_episode)
     Djikstra.execute()
     data = pd.read_csv("executionInformation.csv")
     print(i)
@@ -76,10 +76,10 @@ for i in range(nb_exec):
     all_backups_dfd.append(nb_backup)
 
 
-    SR = SuccessorRepresentationFD(env, config.main.alpha,config.main.delta, 
-                                                          config.main.epsilon, config.sr.nb_episode,
-                                                          config.main.max_step, config.sr.small.train_episode_length, 
-                                                          config.sr.small.test_episode_length)
+    SR = SuccessorRepresentationFD(env, config.test.alpha,config.test.delta, 
+                                                          config.test.epsilon, config.test.nb_episode,
+                                                          config.test.max_step, config.test.train_episode_length, 
+                                                          config.test.test_episode_length)
     SR.execute()
     data = pd.read_csv("executionInformation.csv")
     print(i)

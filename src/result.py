@@ -17,7 +17,7 @@ import numpy as np
 
 from omegaconf import OmegaConf
 # Load YAML config file as DictConfig
-config = OmegaConf.load("config.yaml")
+config = OmegaConf.load("src/config.yaml")
 
 """
 =========================== README ===========================

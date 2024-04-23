@@ -20,3 +20,15 @@ sr :
     train_episode_length : 1000
     test_episode_length : 80
 
+
+test :
+  render : false
+  epsilon : 0.5
+  delta : 0.0001
+  alpha : 0.5
+  gamma : 0.95
+  max_step : 500
+  nb_episode : 200
+  nb_execution : 20
+  train_episode_length : 200
+  test_episode_length : 20

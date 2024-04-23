@@ -1,12 +1,12 @@
 import cProfile
 import pstats
-import main
+import testprofiling
 
 # Exécuter le profilage sur le script
 # cProfile.run('result.main()')
 
 with cProfile.Profile() as profile:
-    main.main()
+    testprofiling
 
 results = pstats.Stats(profile)
 results.sort_stats(pstats.SortKey.TIME)
