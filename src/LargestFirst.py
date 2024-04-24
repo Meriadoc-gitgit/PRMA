@@ -72,7 +72,10 @@ class LargestFirst(PrioritizedReplayAgent) :
 
     self.update_q_value(state,action,next_state,reward, 1)   
     self.fill_memory([state,action,next_state,reward])
-    self.add_predecessors(state) 
+
+    TD = abs(self.TD_error(state,action,next_state,reward))
+    if TD >= self.delta:
+      self.add_predecessors(state) 
 
     
   def handle_step(self, state,action,next_state,reward):
@@ -95,8 +98,8 @@ class LargestFirst(PrioritizedReplayAgent) :
       self.nb_backup+=1  
     
     experience = [state,action,next_state,reward]
+    self.fill_memory(experience)  
     self.add_experience(experience)
-    self.fill_memory(experience)
     
   def add_experience(self, experience):
 
@@ -131,3 +134,4 @@ class LargestFirst(PrioritizedReplayAgent) :
       max_reward_next_state = 0
     
     return reward + self.mdp.unwrapped.gamma * max_reward_next_state - self.q_table[state,action]
+  

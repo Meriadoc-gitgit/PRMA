@@ -29,6 +29,6 @@ test :
   gamma : 0.95
   max_step : 500
   nb_episode : 200
-  nb_execution : 20
+  nb_execution : 5
   train_episode_length : 200
   test_episode_length : 20
