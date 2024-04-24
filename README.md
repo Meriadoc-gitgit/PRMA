@@ -10,3 +10,7 @@ Les articles principaux :
 - Prioritized experience replay | Schaul, T., Quan, J., Antonoglou, I., & Silver, D. arXiv preprint arXiv:1511.05952, 2015 | [pdf](https://arxiv.org/pdf/1511.05952.pdf)
 
 - [Le dépôt des étudiants de l’an dernier](https://github.com/GabyRkt/Prioritized-Memory-Access)
+
+
+Diagramme de structure de code : 
+![](diagramme.png) 
