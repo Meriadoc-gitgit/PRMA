@@ -26,23 +26,10 @@ class RandomDyna(PrioritizedReplayAgent) :
         Returns
         ----------      
     """
-    key = self.key_choice()
+    key = random.randint(0, len(self.memory)-1)
     [state, action, next_state, reward] = self.memory[key]                # on récupère les valeurs de s_t, action, s_t+1, reward (ceux-là ne sont pas ceux en dehors de la boucle)
     del(self.memory[key])
     self.update_q_value(state,action,next_state,reward, 1)   #mise à jour du modele
-  
-  """================== CHOIX DE CLÉ =================="""  
-  def key_choice(self) : 
-    """ Choix de clé selon l'algorithme pris en entrée
-
-        Arguments
-        ----------
-        
-        Returns   
-        ----------      
-            key -- float : clé choisie selon l'algorithme pris en entrée
-    """
-    return random.randint(0, len(self.memory)-1)
 
 
   def fill_memory(self, experience):
