@@ -6,20 +6,21 @@ main :
   gamma : 0.95
   max_step : 2000
   nb_episode : 500
-  nb_execution : 100
+  nb_execution : 10
 
 
 sr : 
-  nb_episode : 50
-  small : 
+  nb_episode : 200
+
+  env9x6 : 
     train_episode_length : 200
     test_episode_length : 20
-  grand : 
-    # train_episode_length : 1000
-    # test_episode_length : 80
+  env18x12 : 
     train_episode_length : 1000
-    test_episode_length : 80
-
+    test_episode_length : 100
+  env36x24 : 
+    train_episode_length : 5000
+    test_episode_length : 500
 
 test :
   render : false

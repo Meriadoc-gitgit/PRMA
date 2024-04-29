@@ -7,7 +7,7 @@ from RandomDyna import RandomDyna
 from DjikstraFD import DjikstraFD
 from SuccessorRepresentationFD import SuccessorRepresentationFD
 
-from maze import setup_env_18x12      
+from maze import setup_env_36x24      
 from utils import moyenne_par_indice        
 from scipy.interpolate import interp1d     
 
@@ -20,9 +20,9 @@ config = OmegaConf.load("config.yaml")
 #Create result directory
 if not os.path.exists('res'):
     os.makedirs('res')
-output_path = 'res/figure-8.png'
+output_path = 'res/figure-10.png'
 
-env = setup_env_18x12()
+env = setup_env_36x24()
 
 #largest first
 all_steps_lg = []
@@ -41,8 +41,8 @@ nb_exec = config.main.nb_execution
 
 SR = SuccessorRepresentationFD(env, config.main.alpha,config.main.delta, 
                                     config.main.epsilon, config.sr.nb_episode,
-                                    config.main.max_step, config.sr.env18x12.train_episode_length, 
-                                    config.sr.env18x12.test_episode_length)
+                                    config.main.max_step, config.sr.env36x24.train_episode_length, 
+                                    config.sr.env36x24.test_episode_length)
 
 for i in range(nb_exec):
     QueueDyna = LargestFirst(env, config.main.alpha, config.main.delta, 
@@ -96,7 +96,7 @@ plt.plot(moyenne_par_indice(all_backups_rd), moyenne_par_indice(all_steps_rd) ,c
 plt.plot(moyenne_par_indice(all_backups_dfd), moyenne_par_indice(all_steps_dfd), color='green', linewidth=2, label = f"FocusedDyna avec Djikstra nb_episode/execution = {Djikstra.episode}")
 
 
-#plt.plot(moyenne_par_indice(all_backups_srfd), moyenne_par_indice(all_steps_srfd), color='orange', linewidth=2, label = f"FocusedDyna avec Successor Representation nb_episode/execution = {SR.episode}")
+plt.plot(moyenne_par_indice(all_backups_srfd), moyenne_par_indice(all_steps_srfd), color='orange', linewidth=2, label = f"FocusedDyna avec Successor Representation nb_episode/execution = {SR.episode}")
 
 
 

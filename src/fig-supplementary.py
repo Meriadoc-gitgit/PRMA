@@ -1,4 +1,3 @@
-
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -8,7 +7,7 @@ from RandomDyna import RandomDyna
 from DjikstraFD import DjikstraFD
 from SuccessorRepresentationFD import SuccessorRepresentationFD
 
-from maze import setup_env_36x24      
+from maze import setup_env_9x6      
 from utils import moyenne_par_indice        
 from scipy.interpolate import interp1d     
 
@@ -16,14 +15,14 @@ import os
 from omegaconf import OmegaConf
 
 # Load YAML config file as DictConfig
-config = OmegaConf.load("src/config.yaml")
+config = OmegaConf.load("config.yaml")
 
 #Create result directory
-if not os.path.exists('src/res'):
-    os.makedirs('src/res')
-output_path = 'src/res/figure.png'
+if not os.path.exists('res'):
+    os.makedirs('res')
+output_path = 'res/figure-supplementary.png'
 
-env = setup_env_36x24()
+env = setup_env_9x6()
 
 #largest first
 all_steps_lg = []
@@ -39,6 +38,11 @@ all_steps_srfd = []
 all_backups_srfd = []
 
 nb_exec = config.main.nb_execution
+
+SR = SuccessorRepresentationFD(env, config.main.alpha,config.main.delta, 
+                                    config.main.epsilon, config.sr.nb_episode,
+                                    config.main.max_step, config.sr.env9x6.train_episode_length, 
+                                    config.sr.env9x6.test_episode_length)
 
 for i in range(nb_exec):
     QueueDyna = LargestFirst(env, config.main.alpha, config.main.delta, 
@@ -76,10 +80,6 @@ for i in range(nb_exec):
     all_backups_dfd.append(nb_backup)
 
 
-    SR = SuccessorRepresentationFD(env, config.main.alpha,config.main.delta, 
-                                                          config.main.epsilon, config.sr.nb_episode,
-                                                          config.main.max_step, config.sr.grand.train_episode_length, 
-                                                          config.sr.grand.test_episode_length)
     SR.execute()
     data = pd.read_csv("executionInformation.csv")
     print(i)
