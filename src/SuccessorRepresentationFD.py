@@ -6,7 +6,6 @@ Contient l'intégralité du code de la Successor Representation
 -------------------
 """
 import numpy as np
-from heapq import heappop, heappush
 from utils import onehot
 from FocusedDyna import FocusedDyna
 
