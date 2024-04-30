@@ -114,26 +114,40 @@ class PrioritizedReplayAgent:
 
         Arguments
         ---------
-            x -- int : etat d'origine
-            a -- int : action effectue
-            y -- int : etat d'arrivee
-            r -- float : recompense recue
+            state -- int : etat d'origine
+            action -- int : action effectue
+            next_state -- int : etat d'arrivee
+            reward -- float : recompense recue
+        
+    """
+    self.q_table[state,action] = self.q_table[state,action] + alpha*(self.TD_error(state,action,next_state,reward))
+   
+    
+  """==============================================================================================================="""
+
+  def TD_error(self,state,action,next_state,reward):
+    """ Mets à jour le modele #explication insuffisante
+
+        Arguments
+        ----------
+            state -- int : etat d'origine
+            action -- int : action effectue
+            next_state -- int : etat d'arrivee
+            reward -- float : recompense recue
         
         Returns
         ----------      
-            q_table[x,a] + alpha*(r+mdp.unwrapped.gamma*v_y-q_table[x,a])
+            reward + mdp.unwrapped.gamma* max_reward_next_state- q_table[state,action]
     """
-    #v_y correspond à la valeur maximal estimee pour l'etat y, multiplication par 1-terminated pour s'assurer de
-    #ne prendre en compte ce resultat que si l'etat y n'est pas successeur d'un etat terminal
-    v_y = 0
     if state not in self.mdp.unwrapped.terminal_states:
-      v_y =np.max(self.q_table[next_state])
-#pas une reward c'est une q valeur
-    self.q_table[state,action] = self.q_table[state,action] + alpha*(reward + self.mdp.unwrapped.gamma * v_y - self.q_table[state,action])
-   
-
+      max_reward_next_state=np.max(self.q_table[next_state])
+    else:
+      max_reward_next_state = 0
+    
+    return reward + self.mdp.unwrapped.gamma * max_reward_next_state - self.q_table[state,action]
+ 
+    
   """==============================================================================================================="""
-
 
   def get_nb_step(self):
     state = self.start
@@ -148,14 +162,6 @@ class PrioritizedReplayAgent:
       writer = csv.writer(file)
       writer.writerow([self.nb_backup, nb_step])
 
-    
-
-      
-    
-      
-  
- 
-    
 
 
       

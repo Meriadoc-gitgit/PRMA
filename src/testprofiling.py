@@ -8,7 +8,7 @@ from RandomDyna import RandomDyna
 from DjikstraFD import DjikstraFD
 from SuccessorRepresentationFD import SuccessorRepresentationFD
 
-from maze import setup_env_36x24    
+from maze import setup_env_36x24 ,setup_env_18x12
 from utils import moyenne_par_indice        
 from scipy.interpolate import interp1d     
 
@@ -16,14 +16,14 @@ import os
 from omegaconf import OmegaConf
 
 # Load YAML config file as DictConfig
-config = OmegaConf.load("src/config.yaml")
+config = OmegaConf.load("config.yaml")
 
 #Create result directory
-if not os.path.exists('src/res/test'):
-    os.makedirs('src/res/test')
-output_path = 'src/res/test/figuretest.png'
+if not os.path.exists('res/test'):
+    os.makedirs('res/test')
+output_path = 'res/test/figuretest.png'
 
-env = setup_env_36x24()
+env = setup_env_18x12()
 
 #largest first
 all_steps_lg = []

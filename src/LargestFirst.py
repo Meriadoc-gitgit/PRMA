@@ -113,25 +113,3 @@ class LargestFirst(PrioritizedReplayAgent) :
     """
     state, action , next_state, reward = experience
     self.experienced[next_state].append(experience)
-
-  def TD_error(self,state,action,next_state,reward):
-    """ Mets à jour le modele #explication insuffisante
-
-        Arguments
-        ----------
-            state -- int : etat d'origine
-            action -- int : action effectue
-            next_state -- int : etat d'arrivee
-            reward -- float : recompense recue
-        
-        Returns
-        ----------      
-            reward + mdp.unwrapped.gamma* max_reward_next_state- q_table[state,action]
-    """
-    if state not in self.mdp.unwrapped.terminal_states:
-      max_reward_next_state=np.max(self.q_table[next_state])
-    else:
-      max_reward_next_state = 0
-    
-    return reward + self.mdp.unwrapped.gamma * max_reward_next_state - self.q_table[state,action]
-  
