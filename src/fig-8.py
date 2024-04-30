@@ -86,7 +86,7 @@ for i in range(nb_exec):
     nb_steps = data.iloc[:, 1].tolist()
     nb_backup = data.iloc[:,0].tolist()
     all_steps_srfd.append(nb_steps)
-    all_backups_srfd.append(nb_backup)
+    all_backups_srfd.append(nb_backup) 
 
     
 plt.plot(moyenne_par_indice(all_backups_lg), moyenne_par_indice(all_steps_lg), color='red', linewidth=2, label = f"Largest First nb_episode/execution = {QueueDyna.episode}")
