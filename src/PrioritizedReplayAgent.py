@@ -109,21 +109,6 @@ class PrioritizedReplayAgent:
     return action, next_state, reward, terminated
 
   """==============================================================================================================="""
-  def update_q_value(self, state, action, next_state, reward, alpha) :
-    """ Mets à jour le modele 
-
-        Arguments
-        ---------
-            state -- int : etat d'origine
-            action -- int : action effectue
-            next_state -- int : etat d'arrivee
-            reward -- float : recompense recue
-        
-    """
-    self.q_table[state,action] = self.q_table[state,action] + alpha*(self.TD_error(state,action,next_state,reward))
-   
-    
-  """==============================================================================================================="""
 
   def TD_error(self,state,action,next_state,reward):
     """ Mets à jour le modele #explication insuffisante

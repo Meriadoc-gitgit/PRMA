@@ -49,7 +49,7 @@ class FocusedDyna(PrioritizedReplayAgent) :
     """
         (priority, [state, action, next_state, reward]) = heappop(self.memory)
         #print(state)
-        self.update_q_value(state,action,next_state,reward, 1)
+        self.q_table[state,action] = self.q_table[state,action] + self.TD_error(state,action,next_state,reward)
 
     
 
@@ -72,7 +72,7 @@ class FocusedDyna(PrioritizedReplayAgent) :
     """
         priority = self.compute_priority(state,next_state, reward)    
         if priority:
-            self.update_q_value(state, action, next_state, reward, self.alpha)
+            self.q_table[state,action] = self.q_table[state,action] + self.alpha*(self.TD_error(state,action,next_state,reward))
             self.nb_backup+=1  
     
         experience = [state,action,next_state,reward]

@@ -29,7 +29,7 @@ class RandomDyna(PrioritizedReplayAgent) :
     key = random.randint(0, len(self.memory)-1)
     [state, action, next_state, reward] = self.memory[key]                # on récupère les valeurs de s_t, action, s_t+1, reward (ceux-là ne sont pas ceux en dehors de la boucle)
     del(self.memory[key])
-    self.update_q_value(state,action,next_state,reward, 1)   #mise à jour du modele
+    self.q_table[state,action] = self.q_table[state,action] + self.TD_error(state,action,next_state,reward)  #mise à jour du modele
 
 
   def fill_memory(self, experience):
@@ -37,7 +37,7 @@ class RandomDyna(PrioritizedReplayAgent) :
 
   def handle_step(self, state,action,next_state,reward):
 
-    self.update_q_value(state, action, next_state, reward, self.alpha)   #backup qu'à partir du moment où on a atteint le goal
+    self.q_table[state,action] = self.q_table[state,action] + self.alpha*(self.TD_error(state,action,next_state,reward)) #backup qu'à partir du moment où on a atteint le goal
     self.nb_backup+=1  
     
     experience = [state,action,next_state,reward]

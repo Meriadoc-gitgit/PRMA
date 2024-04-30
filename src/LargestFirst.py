@@ -70,7 +70,8 @@ class LargestFirst(PrioritizedReplayAgent) :
     """
     (TD, [state, action, next_state, reward]) = heappop(self.memory)
 
-    self.update_q_value(state,action,next_state,reward, 1)   
+    #ici on multiplie en fait self.TD_error par alpha=1
+    self.q_table[state,action] = self.q_table[state,action] + self.TD_error(state,action,next_state,reward) 
     self.fill_memory([state,action,next_state,reward])
 
     TD = abs(self.TD_error(state,action,next_state,reward))
@@ -94,7 +95,7 @@ class LargestFirst(PrioritizedReplayAgent) :
 
     TD = abs(self.TD_error( state,action,next_state,reward))    # calcul de la différence de magnitude  utilise comme priorite dans la Queue
     if TD:
-      self.update_q_value(state, action, next_state, reward, self.alpha)   #backup qu'à partir du moment où on a atteint le goal
+      self.q_table[state,action] = self.q_table[state,action] + self.alpha*(self.TD_error(state,action,next_state,reward))   #backup qu'à partir du moment où on a atteint le goal
       self.nb_backup+=1  
     
     experience = [state,action,next_state,reward]
