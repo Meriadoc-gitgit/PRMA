@@ -128,7 +128,7 @@ class PrioritizedReplayAgent:
     v_y = 0
     if state not in self.mdp.unwrapped.terminal_states:
       v_y =np.max(self.q_table[next_state])
-
+#pas une reward c'est une q valeur
     self.q_table[state,action] = self.q_table[state,action] + alpha*(reward + self.mdp.unwrapped.gamma * v_y - self.q_table[state,action])
    
 

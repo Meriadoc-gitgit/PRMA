@@ -8,7 +8,7 @@ from RandomDyna import RandomDyna
 from DjikstraFD import DjikstraFD
 from SuccessorRepresentationFD import SuccessorRepresentationFD
 
-from maze import setup_env_18x12    
+from maze import setup_env_36x24    
 from utils import moyenne_par_indice        
 from scipy.interpolate import interp1d     
 
@@ -23,7 +23,7 @@ if not os.path.exists('src/res/test'):
     os.makedirs('src/res/test')
 output_path = 'src/res/test/figuretest.png'
 
-env = setup_env_18x12()
+env = setup_env_36x24()
 
 #largest first
 all_steps_lg = []
