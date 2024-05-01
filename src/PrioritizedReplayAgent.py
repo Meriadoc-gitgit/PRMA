@@ -16,6 +16,8 @@ from gymnasium.wrappers.monitoring.video_recorder import VideoRecorder
 from IPython.display import Video
 from mazemdp.toolbox import egreedy
 from mazemdp.mdp import Mdp as mdp
+from collections import defaultdict
+from heapq import heappop, heappush
 import csv
 import os
 
@@ -43,6 +45,7 @@ class PrioritizedReplayAgent:
     self.memory = []  #memoire contient un tri des experiences vecues
     self.nb_backup = 0
     self.start = self.mdp.reset()[0]
+    self.experienced = defaultdict(list)
 
 
     self.alpha = alpha
@@ -70,12 +73,11 @@ class PrioritizedReplayAgent:
       for j in range(self.max_step):
         action, next_state, reward, terminated = self.step_in_world(state)
 
-        if self.memory:                                      
-          k=5
-          while(k>0 and self.memory):
-            self.update_memory()
-            k-=1
-
+        for k in range(5):
+          if not self.memory:
+            break
+          self.update_memory()
+   
         if state in self.mdp.unwrapped.terminal_states:
           # print("end")
           break 
@@ -104,8 +106,17 @@ class PrioritizedReplayAgent:
     action = egreedy(self.q_table, state, self.epsilon)       # choix d'une action avec la méthode epsilon
     next_state, reward, terminated, truncated, _ = self.mdp.step(action)    # effectue l'action à dans l'environnement
 
-    self.handle_step(state,action,next_state,reward)
+    experience = [state,action, next_state, reward]
+    priority = self.compute_priority(experience)
+
+    if priority :
+      self.q_table[state,action] = self.q_table[state,action] + self.alpha*(self.TD_error(state,action,next_state,reward))   #backup qu'à partir du moment où on a atteint le goal
+      self.add_predecessors(state)
+      self.nb_backup+=1  
     
+    self.fill_memory(experience, priority = priority)  
+    self.experienced[next_state].append(experience)
+
     return action, next_state, reward, terminated
 
   """==============================================================================================================="""
@@ -131,7 +142,61 @@ class PrioritizedReplayAgent:
     
     return reward + self.mdp.unwrapped.gamma * max_reward_next_state - self.q_table[state,action]
  
-    
+  """==============================================================================================================="""
+
+  def add_predecessors(self, state_for_pred):
+    """ Ajoute les experiences qui ont comme next_state state_for_pred à la mémoire
+
+        Arguments
+        ---------
+            state_for_pred -- int : 
+        ---------
+        Returns
+        ---------- 
+    """
+    if state_for_pred in self.experienced.keys() :
+      pred = self.experienced[state_for_pred]
+      for experience in pred:          #après avoir trouvé les predecesseurs repondant au critere on peut les ajouter a PQueue
+        self.fill_memory(experience)
+
+  """==============================================================================================================="""
+  def fill_memory(self, experience, priority = None):
+    """ Ajoute experience à la mémoire si son erreur de différence temporelle est significative
+
+      Arguments
+      ---------
+          experience -- list : experience à ajouter à la mémoire
+          priority -- float : priorité de l'experience, si ajout de l'experience suite à un pas dans le monde elle est connu si ajout lors du traitement
+                              des predecessors elle est inconnu il faut donc la calculer
+      ---------
+      Returns
+      ---------- 
+    """
+    if priority is None:
+      priority = self.compute_priority(experience)
+
+    if priority>= self.delta :
+      heappush(self.memory, (-priority, experience))
+
+  """==============================================================================================================="""
+  def update_memory(self): 
+    """ Traite l'experience la plus prioritaire de la mémoire: mise à jour des q-valeurs, 
+        réinsertion en mémoire et ajout des prédecesseurs de l'experience)
+
+      Arguments
+      ---------
+      Returns
+      ---------- 
+    """
+    (priority, [state, action, next_state, reward]) = heappop(self.memory)
+
+    #ici on multiplie en fait self.TD_error par alpha=1
+    self.q_table[state,action] = self.q_table[state,action] + self.TD_error(state,action,next_state,reward) 
+    self.fill_memory([state,action,next_state,reward], priority=priority)
+
+    if priority >= self.delta:
+      self.add_predecessors(state) 
+
   """==============================================================================================================="""
 
   def get_nb_step(self):

@@ -30,16 +30,28 @@ class RandomDyna(PrioritizedReplayAgent) :
     [state, action, next_state, reward] = self.memory[key]                # on récupère les valeurs de s_t, action, s_t+1, reward (ceux-là ne sont pas ceux en dehors de la boucle)
     del(self.memory[key])
     self.q_table[state,action] = self.q_table[state,action] + self.TD_error(state,action,next_state,reward)  #mise à jour du modele
+  
 
+  def step_in_world(self, state) : 
+    """ Effectuer un pas dans le monde - instructions correspondantes à la premières parties de la boucle
 
-  def fill_memory(self, experience):
-    self.memory.append(experience)
-
-  def handle_step(self, state,action,next_state,reward):
+        Arguments
+        ----------
+            state -- int : état courant
+        
+        Returns
+        ----------      
+            action -- int : l'action déterminée par e-greedy
+            next_state -- int : l'état suivant
+            reward -- float : récompense accordée
+            terminated -- bool : déterminé si l'état est terminal
+    """
+    action = egreedy(self.q_table, state, self.epsilon)       # choix d'une action avec la méthode epsilon
+    next_state, reward, terminated, truncated, _ = self.mdp.step(action)    # effectue l'action à dans l'environnement
 
     self.q_table[state,action] = self.q_table[state,action] + self.alpha*(self.TD_error(state,action,next_state,reward)) #backup qu'à partir du moment où on a atteint le goal
     self.nb_backup+=1  
     
-    experience = [state,action,next_state,reward]
-    self.fill_memory(experience)
+    self.memory.append([state,action,next_state,reward])
     
+    return action, next_state, reward, terminated
