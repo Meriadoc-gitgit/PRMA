@@ -34,7 +34,7 @@ class SuccessorRepresentationFD(FocusedDyna) :
     self.M = np.stack([np.identity(mdp.unwrapped.nb_states) for i in range(mdp.action_space.n)])
 
     self.experiences = []
-    self.lifetime_td_errors = []  #a quoi ca sert?
+    #self.lifetime_td_errors = []  #a quoi ca sert?
     self.test_lengths = []
 
     self.path_length_from_start()
@@ -126,7 +126,7 @@ class SuccessorRepresentationFD(FocusedDyna) :
         episodic_error.append(np.mean(np.abs(td_sr)))
         break
       
-    self.lifetime_td_errors.append(np.mean(episodic_error))
+    #self.lifetime_td_errors.append(np.mean(episodic_error))
 
   def test_phase(self) : 
     """ Phase de test
@@ -182,11 +182,14 @@ class SuccessorRepresentationFD(FocusedDyna) :
     for state_goal in range(1, self.mdp.unwrapped.nb_states) : 
       print("goal",state_goal)
       state, _ = self.mdp.reset()
-      self.lifetime_td_errors = []
+      #self.lifetime_td_errors = []
       self.test_lengths = []
+      self.experiences = []
       self.mdp.unwrapped.terminal_states = [state_goal]
       self.trial()
       self.stepsFromStart[state_goal] = self.optimal_path_length()
+      del self.test_lengths
+      del self.experiences
       #print(state_goal, self.stepsFromStart[state_goal])
     self.mdp.unwrapped.terminal_states = true_terminal_states 
     #derniere ligne : on a besoin de ca sinon le terminal states corresponds
