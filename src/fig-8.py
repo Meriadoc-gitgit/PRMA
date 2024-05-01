@@ -39,7 +39,10 @@ all_backups_srfd = []
 
 nb_exec = config.main.nb_execution
 
-
+SR = SuccessorRepresentationFD(env, config.main.alpha,config.main.delta, 
+                                    config.main.epsilon, config.sr.nb_episode,
+                                    config.main.max_step, config.sr.env18x12.train_episode_length, 
+                                    config.sr.env18x12.test_episode_length)
 
 for i in range(nb_exec):
     QueueDyna = LargestFirst(env, config.main.alpha, config.main.delta, 
@@ -95,7 +98,7 @@ plt.plot(moyenne_par_indice(all_backups_srfd), moyenne_par_indice(all_steps_srfd
 plt.plot(moyenne_par_indice(all_backups_dfd), moyenne_par_indice(all_steps_dfd), color='green', linewidth=2, label = f"FocusedDyna avec Djikstra nb_episode/execution = {Djikstra.episode}")
 
 
-plt.figure(figsize=(15,10))
+# plt.figure(figsize=(15,10))
 plt.title(f'Courbe du nombre de step to goal en fonction du nombre de backup moyenne sur {nb_exec} executions ')
 plt.xlabel('nb_backup')
 plt.ylabel('nb_step')

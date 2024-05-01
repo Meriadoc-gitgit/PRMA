@@ -133,7 +133,7 @@ class PrioritizedReplayAgent:
         
         Returns
         ----------      
-            reward + mdp.unwrapped.gamma* max_reward_next_state- q_table[state,action]
+            reward + gamma* max_reward_next_state- q_table[state,action]
     """
     if state not in self.mdp.unwrapped.terminal_states:
       max_reward_next_state=np.max(self.q_table[next_state])

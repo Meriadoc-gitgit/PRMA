@@ -6,7 +6,7 @@ main :
   gamma : 0.95
   max_step : 2000
   nb_episode : 500
-  nb_execution : 10
+  nb_execution : 30
 
 
 sr : 
