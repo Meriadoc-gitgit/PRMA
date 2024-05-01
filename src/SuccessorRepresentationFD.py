@@ -178,6 +178,15 @@ class SuccessorRepresentationFD(FocusedDyna) :
 
   
   def path_length_from_start(self) : 
+    """ Calculate the path length from the start state
+
+        Arguments
+        ---------
+        
+        Returns
+        ----------  
+        path length from the start state
+    """
     true_terminal_states = self.mdp.unwrapped.terminal_states
     for state_goal in range(1, self.mdp.unwrapped.nb_states) : 
       print("goal",state_goal)
