@@ -15,9 +15,7 @@ import numpy as np
 class DjikstraFD(FocusedDyna) :
     def __init__(self, mdp, alpha, delta, epsilon, max_step, render, episode):
         super().__init__(mdp, alpha, delta, epsilon, max_step, render, episode)
-        print("avant")
         self.djikstra()
-        print("apres")
 
         """==============================================================================================================="""
 

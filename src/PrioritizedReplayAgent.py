@@ -45,7 +45,7 @@ class PrioritizedReplayAgent:
     self.memory = []  #memoire contient un tri des experiences vecues
     self.nb_backup = 0
     self.start = self.mdp.reset()[0]
-    self.experienced = defaultdict(list)
+    self.experienced = defaultdict(set)
 
 
     self.alpha = alpha
@@ -53,6 +53,14 @@ class PrioritizedReplayAgent:
     self.epsilon = epsilon
     self.max_step = max_step
 
+    # if os.path.exists('executionInformation.csv'):
+    #   os.remove('executionInformation.csv')
+    if os.path.exists("executionInformation.csv"):
+    # Ouvrir le fichier en mode écriture ('w') pour vider son contenu
+      with open("executionInformation.csv", 'w') as file:
+        writer = csv.writer(file)
+        writer.writerow([0,self.max_step])
+    
 
   """================== Excecution =================="""  
   def execute(self) : 
@@ -62,15 +70,15 @@ class PrioritizedReplayAgent:
             model_name -- str : nom du modèle
         ----------
     """
-    if os.path.exists('executionInformation.csv'):
-      os.remove('executionInformation.csv')
+
  
     for i in range(self.episode): 
       state, _ = self.mdp.reset()                
       if self.render:
-        self.mdp.draw_v_pi(self.q_table, self.q_table.argmax(axis=1), recorder=None)
+        self.mdp.unwrapped.draw_v_pi(self.q_table, self.q_table.argmax(axis=1), recorder=None)
       
       for j in range(self.max_step):
+        # self.get_nb_step()
         action, next_state, reward, terminated = self.step_in_world(state)
 
         for k in range(5):
@@ -79,11 +87,10 @@ class PrioritizedReplayAgent:
           self.update_memory()
    
         if state in self.mdp.unwrapped.terminal_states:
-          # print("end")
           break 
         
         state=next_state                     #l'agent est maintenant à l'etat qui succède x
-      self.get_nb_step()
+
       
 
    
@@ -106,18 +113,21 @@ class PrioritizedReplayAgent:
     action = egreedy(self.q_table, state, self.epsilon)       # choix d'une action avec la méthode epsilon
     next_state, reward, terminated, truncated, _ = self.mdp.step(action)    # effectue l'action à dans l'environnement
 
-    experience = [state,action, next_state, reward]
+    experience = (state,action, next_state, reward)
     priority = self.compute_priority(experience)
 
     if priority :
       self.q_table[state,action] = self.q_table[state,action] + self.alpha*(self.TD_error(state,action,next_state,reward))   #backup qu'à partir du moment où on a atteint le goal
       self.add_predecessors(state)
-      self.nb_backup+=1  
+      self.nb_backup+=1
+      self.get_nb_step()
+
     
-    self.fill_memory(experience, priority = priority)  
-    self.experienced[next_state].append(experience)
+    self.fill_memory(experience, priority = priority) 
+    self.experienced[next_state].add(experience)
 
     return action, next_state, reward, terminated
+
 
   """==============================================================================================================="""
 
@@ -154,10 +164,13 @@ class PrioritizedReplayAgent:
         Returns
         ---------- 
     """
-    if state_for_pred in self.experienced.keys() :
+
+    if state_for_pred in self.experienced :
       pred = self.experienced[state_for_pred]
+      del self.experienced[state_for_pred]
       for experience in pred:          #après avoir trouvé les predecesseurs repondant au critere on peut les ajouter a PQueue
         self.fill_memory(experience)
+   
 
   """==============================================================================================================="""
   def fill_memory(self, experience, priority = None):
@@ -174,9 +187,10 @@ class PrioritizedReplayAgent:
     """
     if priority is None:
       priority = self.compute_priority(experience)
-
-    if priority>= self.delta :
-      heappush(self.memory, (-priority, experience))
+    
+    if priority>= self.delta:
+        heappush(self.memory, (-priority, experience))
+        
 
   """==============================================================================================================="""
   def update_memory(self): 
@@ -188,13 +202,13 @@ class PrioritizedReplayAgent:
       Returns
       ---------- 
     """
-    (priority, [state, action, next_state, reward]) = heappop(self.memory)
 
+    (priority, (state, action, next_state, reward)) = heappop(self.memory)
     #ici on multiplie en fait self.TD_error par alpha=1
     self.q_table[state,action] = self.q_table[state,action] + self.TD_error(state,action,next_state,reward) 
-    self.fill_memory([state,action,next_state,reward], priority=priority)
+    self.fill_memory((state,action,next_state,reward), priority=priority)
 
-    if priority >= self.delta:
+    if priority <= self.delta:
       self.add_predecessors(state) 
 
   """==============================================================================================================="""

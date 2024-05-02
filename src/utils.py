@@ -33,13 +33,27 @@ def get_policy_from_q(q: np.ndarray) -> np.ndarray:
 
 """==============================================================================================================="""
 
-def moyenne_par_indice(liste):
+def moyenne_par_indice(liste_de_listes):
     """Prends une liste de listes et retourne une liste contenant à chaque indice la valeur moyenne des valeurs de cet indice de chaque liste
     """
-    tableau = np.array(liste)
-    moyennes = np.mean(tableau, axis=0)
-    moyennes = np.where(np.isnan(moyennes), None, moyennes)
-    return moyennes.tolist()
+
+    somme_par_indice = {}
+
+    for liste in liste_de_listes:
+        for indice, valeur in enumerate(liste):
+            if indice not in somme_par_indice:
+                somme_par_indice[indice] = []  
+            somme_par_indice[indice].append(valeur)  
+
+    resultat = []
+    for indice in sorted(somme_par_indice.keys()): 
+        valeurs = somme_par_indice[indice]
+        moyenne = sum(valeurs) / len(valeurs) 
+        resultat.append(moyenne)
+
+    return resultat
+
+
 
 """==============================================================================================================="""
 
