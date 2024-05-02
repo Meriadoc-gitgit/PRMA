@@ -4,9 +4,9 @@ main :
   delta : 0.0001
   alpha : 0.5
   gamma : 0.95
-  max_step : 20000
-  nb_episode : 500
-  nb_execution : 3
+  max_step : 10000
+  nb_episode : 1000
+  nb_execution : 100
 
 
 sr : 
