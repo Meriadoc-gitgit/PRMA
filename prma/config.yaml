@@ -10,7 +10,7 @@ main :
 
 
 sr : 
-  nb_episode : 100
+  nb_episode : 50
 
   env9x6 : 
     train_episode_length : 200
