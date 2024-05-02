@@ -53,8 +53,6 @@ class PrioritizedReplayAgent:
     self.epsilon = epsilon
     self.max_step = max_step
 
-    if os.path.exists('executionInformation.csv'):
-      os.remove('executionInformation.csv')
 
   """================== Excecution =================="""  
   def execute(self) : 
@@ -64,6 +62,8 @@ class PrioritizedReplayAgent:
             model_name -- str : nom du modèle
         ----------
     """
+    if os.path.exists('executionInformation.csv'):
+      os.remove('executionInformation.csv')
  
     for i in range(self.episode): 
       state, _ = self.mdp.reset()                

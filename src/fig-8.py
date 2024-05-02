@@ -7,7 +7,7 @@ from RandomDyna import RandomDyna
 from DjikstraFD import DjikstraFD
 from SuccessorRepresentationFD import SuccessorRepresentationFD
 
-from maze import setup_env_18x12      
+from maze import setup_env_36x24      
 from utils import moyenne_par_indice        
 from scipy.interpolate import interp1d     
 
@@ -20,9 +20,9 @@ config = OmegaConf.load("config.yaml")
 #Create result directory
 if not os.path.exists('res'):
     os.makedirs('res')
-output_path = 'res/figure-8-new.png'
+output_path = 'res/figure-8-g75.png'
 
-env = setup_env_18x12()
+env = setup_env_36x24()
 
 #largest first
 all_steps_lg = []
@@ -88,17 +88,17 @@ for i in range(nb_exec):
     all_steps_srfd.append(nb_steps)
     all_backups_srfd.append(nb_backup) 
 
+plt.figure(figsize=(15,10))
     
 plt.plot(moyenne_par_indice(all_backups_lg), moyenne_par_indice(all_steps_lg), color='red', linewidth=2, label = f"Largest First nb_episode/execution = {QueueDyna.episode}")
 
 plt.plot(moyenne_par_indice(all_backups_rd), moyenne_par_indice(all_steps_rd) ,color='blue', linewidth=2, label = f"Random Dyna nb_episode/execution = {RDyna.episode}")
 
-plt.plot(moyenne_par_indice(all_backups_srfd), moyenne_par_indice(all_steps_srfd), color='orange', linewidth=2, label = f"FocusedDyna avec Successor Representation nb_episode/execution = {SR.episode}")
+plt.plot(moyenne_par_indice(all_backups_srfd), moyenne_par_indice(all_steps_srfd), color='orange',linestyle='--', linewidth=2, label = f"FocusedDyna avec Successor Representation nb_episode/execution = {SR.episode}")
+
 
 plt.plot(moyenne_par_indice(all_backups_dfd), moyenne_par_indice(all_steps_dfd), color='green', linewidth=2, label = f"FocusedDyna avec Djikstra nb_episode/execution = {Djikstra.episode}")
 
-
-# plt.figure(figsize=(15,10))
 plt.title(f'Courbe du nombre de step to goal en fonction du nombre de backup moyenne sur {nb_exec} executions ')
 plt.xlabel('nb_backup')
 plt.ylabel('nb_step')
