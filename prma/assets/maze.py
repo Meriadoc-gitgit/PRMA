@@ -3,7 +3,7 @@ from assets.RewardWrapper import RewardWrapper
 from omegaconf import OmegaConf
 
 import sys
-sys.path.append('../')   # iads doit être dans le répertoire père du répertoire courant !
+sys.path.append('../')   
 
 # Load YAML config file as DictConfig
 config = OmegaConf.load("setup/config.yaml")
