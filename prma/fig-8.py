@@ -40,10 +40,6 @@ all_backups_srfd = []
 
 nb_exec = config.main.nb_execution
 
-SR = SuccessorRepresentationFD(env, config.main.alpha,config.main.delta, 
-                                    config.main.epsilon, config.sr.nb_episode,
-                                    config.main.max_step, config.sr.env18x12.train_episode_length, 
-                                    config.sr.env18x12.test_episode_length)
 
 for i in range(nb_exec):
     QueueDyna = LargestFirst(env, config.main.alpha, config.main.delta, 
@@ -80,14 +76,18 @@ for i in range(nb_exec):
     all_steps_dfd.append(nb_steps)
     all_backups_dfd.append(nb_backup)
 
+    # SR = SuccessorRepresentationFD(env, config.main.alpha,config.main.delta, 
+    #                                 config.main.epsilon, config.sr.nb_episode,
+    #                                 config.main.max_step, config.sr.env36x24.train_episode_length, 
+    #                                 config.sr.env36x24.test_episode_length)
 
-    SR.execute()
-    data = pd.read_csv("executionInformation.csv")
-    print(i)
-    nb_steps = data.iloc[:, 1].tolist()
-    nb_backup = data.iloc[:,0].tolist()
-    all_steps_srfd.append(nb_steps)
-    all_backups_srfd.append(nb_backup) 
+    # SR.execute()
+    # data = pd.read_csv("executionInformation.csv")
+    # print(i)
+    # nb_steps = data.iloc[:, 1].tolist()
+    # nb_backup = data.iloc[:,0].tolist()
+    # all_steps_srfd.append(nb_steps)
+    # all_backups_srfd.append(nb_backup) 
 
 plt.figure(figsize=(15,10))
 
@@ -97,7 +97,7 @@ plt.plot(moyenne_par_indice(all_backups_lg), moyenne_par_indice(all_steps_lg), c
 
 plt.plot(moyenne_par_indice(all_backups_rd), moyenne_par_indice(all_steps_rd) ,color='blue', linewidth=2, label = f"Random Dyna nb_episode/execution = {RDyna.episode}")
 
-plt.plot(moyenne_par_indice(all_backups_srfd), moyenne_par_indice(all_steps_srfd), color='orange',linestyle='--', linewidth=2, label = f"FocusedDyna avec Successor Representation nb_episode/execution = {SR.episode}")
+# plt.plot(moyenne_par_indice(all_backups_srfd), moyenne_par_indice(all_steps_srfd), color='orange',linestyle='--', linewidth=2, label = f"FocusedDyna avec Successor Representation nb_episode/execution = {SR.episode}")
 
 
 plt.plot(moyenne_par_indice(all_backups_dfd), moyenne_par_indice(all_steps_dfd), color='green', linewidth=2, label = f"FocusedDyna avec Djikstra nb_episode/execution = {Djikstra.episode}")
