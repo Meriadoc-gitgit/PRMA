@@ -105,7 +105,7 @@ plt.title(f'Courbe du nombre de step to goal en fonction du nombre de backup moy
 plt.xlabel('nb_backup')
 plt.ylabel('nb_step')
 plt.xscale('log')
-plt.legend(loc='')
+plt.legend(loc='center')
 plt.grid(True)
 plt.savefig(output_path)
 
