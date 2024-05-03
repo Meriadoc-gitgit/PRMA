@@ -7,7 +7,7 @@ Contient l'algorithme de Focused Dyna
 """
 
 from heapq import heappop, heappush
-from PrioritizedReplayAgent import PrioritizedReplayAgent
+from assets.PrioritizedReplayAgent import PrioritizedReplayAgent
 import numpy as np
 from mazemdp.toolbox import egreedy
 

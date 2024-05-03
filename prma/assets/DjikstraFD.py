@@ -7,7 +7,7 @@ pour calculer les distances entre états dans le maze
 -------------------
 """
 
-from FocusedDyna import FocusedDyna
+from assets.FocusedDyna import FocusedDyna
 from heapq import heappop, heappush
 import numpy as np
 

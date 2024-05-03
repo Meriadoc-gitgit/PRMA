@@ -6,7 +6,7 @@ Contient l'algorithme de Random Dyna
 -------------------
 """
 import random
-from PrioritizedReplayAgent import PrioritizedReplayAgent
+from assets.PrioritizedReplayAgent import PrioritizedReplayAgent
 from mazemdp.toolbox import egreedy
 
 class RandomDyna(PrioritizedReplayAgent) : 

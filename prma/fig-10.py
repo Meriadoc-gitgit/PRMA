@@ -2,20 +2,20 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-from LargestFirst import LargestFirst
-from RandomDyna import RandomDyna
-from DjikstraFD import DjikstraFD
-from SuccessorRepresentationFD import SuccessorRepresentationFD
+from assets.LargestFirst import LargestFirst
+from assets.RandomDyna import RandomDyna
+from assets.DjikstraFD import DjikstraFD
+from assets.SuccessorRepresentationFD import SuccessorRepresentationFD
 
-from maze import setup_env_36x24      
-from utils import moyenne_par_indice        
-from scipy.interpolate import interp1d     
+from assets.maze import setup_env_36x24, setup_env_9x6, setup_env_18x12 
+from assets.utils import moyenne_par_indice        
+from scipy.interpolate import interp1d   
 
 import os       
 from omegaconf import OmegaConf
 
 # Load YAML config file as DictConfig
-config = OmegaConf.load("config.yaml")
+config = OmegaConf.load("setup/config.yaml")
 
 #Create result directory
 if not os.path.exists('res'):

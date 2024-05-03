@@ -5,7 +5,7 @@ Contient l'algorithme de Largest First
 #test
 -------------------
 """
-from PrioritizedReplayAgent import PrioritizedReplayAgent
+from assets.PrioritizedReplayAgent import PrioritizedReplayAgent
 from heapq import heappop, heappush
 from mazemdp.toolbox import egreedy
 from collections import defaultdict

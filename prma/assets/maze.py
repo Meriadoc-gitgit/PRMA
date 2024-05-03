@@ -1,8 +1,12 @@
 import gymnasium as gym
-from RewardWrapper import RewardWrapper
+from assets.RewardWrapper import RewardWrapper
 from omegaconf import OmegaConf
+
+import sys
+sys.path.append('../')   # iads doit être dans le répertoire père du répertoire courant !
+
 # Load YAML config file as DictConfig
-config = OmegaConf.load("config.yaml")
+config = OmegaConf.load("setup/config.yaml")
 
 def setup_env_9x6():
     env_9x6 = gym.make("MazeMDP-v0", kwargs={"width": 9, "height": 6,"start_states": [2],"walls": [13, 14, 15, 34, 42, 43, 44],

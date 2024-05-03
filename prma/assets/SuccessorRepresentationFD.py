@@ -6,8 +6,8 @@ Contient l'intégralité du code de la Successor Representation
 -------------------
 """
 import numpy as np
-from utils import onehot
-from FocusedDyna import FocusedDyna
+from assets.utils import onehot
+from assets.FocusedDyna import FocusedDyna
 
 class SuccessorRepresentationFD(FocusedDyna) : 
   def __init__(self, mdp, alpha, delta, epsilon, episode, max_step, train_episode_length, test_episode_length) : 
