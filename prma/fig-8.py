@@ -22,8 +22,8 @@ if not os.path.exists('res'):
     os.makedirs('res')
 output_path = 'res/figure-8-final.png'
 
-env = setup_env_36x24()
-laby = "36x24"
+env = setup_env_18x12()
+laby = "18x12"
 
 #largest first
 all_steps_lg = []
@@ -39,6 +39,11 @@ all_steps_srfd = []
 all_backups_srfd = []
 
 nb_exec = config.main.nb_execution
+
+SR = SuccessorRepresentationFD(env, config.main.alpha,config.main.delta, 
+                                    config.main.epsilon, config.sr.nb_episode,
+                                    config.main.max_step, config.sr.env9x6.train_episode_length, 
+                                    config.sr.env18x12.test_episode_length)
 
 
 for i in range(nb_exec):
@@ -76,18 +81,13 @@ for i in range(nb_exec):
     all_steps_dfd.append(nb_steps)
     all_backups_dfd.append(nb_backup)
 
-    # SR = SuccessorRepresentationFD(env, config.main.alpha,config.main.delta, 
-    #                                 config.main.epsilon, config.sr.nb_episode,
-    #                                 config.main.max_step, config.sr.env36x24.train_episode_length, 
-    #                                 config.sr.env36x24.test_episode_length)
-
-    # SR.execute()
-    # data = pd.read_csv("executionInformation.csv")
-    # print(i)
-    # nb_steps = data.iloc[:, 1].tolist()
-    # nb_backup = data.iloc[:,0].tolist()
-    # all_steps_srfd.append(nb_steps)
-    # all_backups_srfd.append(nb_backup) 
+    SR.execute()
+    data = pd.read_csv("executionInformation.csv")
+    print(i)
+    nb_steps = data.iloc[:, 1].tolist()
+    nb_backup = data.iloc[:,0].tolist()
+    all_steps_srfd.append(nb_steps)
+    all_backups_srfd.append(nb_backup) 
 
 plt.figure(figsize=(15,10))
 

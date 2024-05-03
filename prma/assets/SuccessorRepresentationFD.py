@@ -189,7 +189,7 @@ class SuccessorRepresentationFD(FocusedDyna) :
     """
     true_terminal_states = self.mdp.unwrapped.terminal_states
     for state_goal in range(1, self.mdp.unwrapped.nb_states) : 
-      # print("goal",state_goal)
+      print("goal",state_goal)
       state, _ = self.mdp.reset()
       #self.lifetime_td_errors = []
       self.test_lengths = []
