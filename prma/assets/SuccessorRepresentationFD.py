@@ -26,7 +26,6 @@ class SuccessorRepresentationFD(FocusedDyna) :
         ----------      
     """
     super().__init__(mdp, alpha, delta, epsilon, max_step,render=False, episode=episode)
-    # self.alpha = alpha
     self.train_episode_length = train_episode_length
     self.test_episode_length = test_episode_length
 
@@ -34,7 +33,6 @@ class SuccessorRepresentationFD(FocusedDyna) :
     self.M = np.stack([np.identity(mdp.unwrapped.nb_states) for i in range(mdp.action_space.n)])
 
     self.experiences = []
-    #self.lifetime_td_errors = []  #a quoi ca sert?
     self.test_lengths = []
 
     self.path_length_from_start()
@@ -121,7 +119,6 @@ class SuccessorRepresentationFD(FocusedDyna) :
         episodic_error.append(np.mean(np.abs(td_sr)))
 
       if terminated : 
-        #print("end")
         td_sr = self.update_sr(self.experiences[-1], self.experiences[-1])
         episodic_error.append(np.mean(np.abs(td_sr)))
         break
@@ -172,7 +169,7 @@ class SuccessorRepresentationFD(FocusedDyna) :
         Optimal path length
     """
     if len(self.test_lengths) == 0 : 
-      # print(self.mdp.unwrapped.terminal_states)
+      print(self.mdp.unwrapped.terminal_states)
       return self.test_episode_length
     return np.min(self.test_lengths)
 
