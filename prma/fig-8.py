@@ -14,6 +14,10 @@ from scipy.interpolate import interp1d
 import os       
 from omegaconf import OmegaConf
 
+import seaborn as sns
+sns.set_theme(style="whitegrid")
+
+
 # Load YAML config file as DictConfig
 config = OmegaConf.load("setup/config.yaml")
 
