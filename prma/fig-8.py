@@ -15,7 +15,6 @@ import os
 from omegaconf import OmegaConf
 
 import seaborn as sns
-sns.set_theme(style="whitegrid")
 
 
 # Load YAML config file as DictConfig
@@ -91,27 +90,23 @@ for i in range(nb_exec):
     nb_steps = data.iloc[:, 1].tolist()
     nb_backup = data.iloc[:,0].tolist()
     all_steps_srfd.append(nb_steps)
-    all_backups_srfd.append(nb_backup) 
+    all_backups_srfd.append(nb_backup)
 
 
-
-# Calcul de la variance
-var_lg = np.var(moyenne_par_indice(all_steps_lg))
-var_rd = np.var(moyenne_par_indice(all_steps_rd))
-var_dfd = np.var(moyenne_par_indice(all_steps_dfd))
-var_srfd = np.var(moyenne_par_indice(all_steps_srfd))
 
 
 # FIGURES
 plt.figure(figsize=(15,10))
 
-sns.lineplot(x=moyenne_par_indice(all_backups_lg), y=moyenne_par_indice(all_steps_lg), color='red', linewidth=2, label=f"LF {QueueDyna.episode} episodes")
+sns.set_theme(style="whitegrid")
 
-sns.lineplot(x=moyenne_par_indice(all_backups_rd), y=moyenne_par_indice(all_backups_rd), color='blue', linewidth=2, label=f"LF {RDyna.episode} episodes")
+sns.lineplot(x=moyenne_par_indice(all_backups_lg), y=moyenne_par_indice(all_steps_lg),label = f"LF {QueueDyna.episode} episodes",errorbar='sd',err_style='band')
 
-sns.lineplot(x=moyenne_par_indice(all_backups_dfd), y=moyenne_par_indice(all_backups_dfd), color='green', linewidth=2, label=f"LF {Djikstra.episode} episodes")
+sns.lineplot(x=moyenne_par_indice(all_backups_rd), y=moyenne_par_indice(all_steps_rd),label = f"LF {RDyna.episode} episodes",errorbar='sd',err_style='band')
 
-sns.lineplot(x=moyenne_par_indice(all_backups_srfd), y=moyenne_par_indice(all_backups_srfd), color='orange', linewidth=2, label=f"LF {SR.episode} episodes",linestyle="--")
+sns.lineplot(x=moyenne_par_indice(all_backups_dfd), y=moyenne_par_indice(all_steps_dfd),label = f"LF {Djikstra.episode} episodes",errorbar='sd',err_style='band')
+
+sns.lineplot(x=moyenne_par_indice(all_backups_srfd), y=moyenne_par_indice(all_steps_srfd),label = f"LF {SR.episode} episodes",errorbar='sd',linestyle="--",err_style='band')
 
 #plt.plot(moyenne_par_indice(all_backups_lg), moyenne_par_indice(all_steps_lg), color='red', linewidth=2, label = f"LF {QueueDyna.episode} episodes")
 
@@ -123,7 +118,7 @@ sns.lineplot(x=moyenne_par_indice(all_backups_srfd), y=moyenne_par_indice(all_ba
 
 
 
-plt.text(0.2,0.5, f" $\epsilon$ : {config.main.epsilon}\n $\delta$ : {config.main.delta}\n α : {config.main.alpha}\n $\gamma$ : {config.main.gamma}\n max_step : {config.main.max_step}\n nb_episode : {config.main.nb_episode}\n labyrinthe : {laby}\n var_lg = {var_lg}\n var_rd = {var_rd}\n var_dfd = {var_dfd}\n var_srfd = {var_srfd}", fontsize =11)
+#plt.text(0.2,0.5, f" $\epsilon$ : {config.main.epsilon}\n $\delta$ : {config.main.delta}\n α : {config.main.alpha}\n $\gamma$ : {config.main.gamma}\n max_step : {config.main.max_step}\n nb_episode : {config.main.nb_episode}\n labyrinthe : {laby}", fontsize =11)
 
 plt.title(f'Courbe du nombre de step to goal en fonction du nombre de backup moyenne sur {nb_exec} executions ')
 plt.xlabel('nb_backup')
