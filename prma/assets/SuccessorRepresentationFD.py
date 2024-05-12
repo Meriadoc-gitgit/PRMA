@@ -169,7 +169,6 @@ class SuccessorRepresentationFD(FocusedDyna) :
         Optimal path length
     """
     if len(self.test_lengths) == 0 : 
-      print(self.mdp.unwrapped.terminal_states)
       return self.test_episode_length
     return np.min(self.test_lengths)
 
