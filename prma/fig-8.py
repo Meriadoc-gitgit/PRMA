@@ -102,19 +102,11 @@ sns.set_theme(style="whitegrid")
 
 sns.lineplot(x=moyenne_par_indice(all_backups_lg), y=moyenne_par_indice(all_steps_lg),label = f"LF {QueueDyna.episode} episodes",errorbar='sd',err_style='band')
 
-sns.lineplot(x=moyenne_par_indice(all_backups_rd), y=moyenne_par_indice(all_steps_rd),label = f"LF {RDyna.episode} episodes",errorbar='sd',err_style='band')
+sns.lineplot(x=moyenne_par_indice(all_backups_rd), y=moyenne_par_indice(all_steps_rd),label = f"RD {RDyna.episode} episodes",errorbar='sd',err_style='band')
 
-sns.lineplot(x=moyenne_par_indice(all_backups_dfd), y=moyenne_par_indice(all_steps_dfd),label = f"LF {Djikstra.episode} episodes",errorbar='sd',err_style='band')
+sns.lineplot(x=moyenne_par_indice(all_backups_dfd), y=moyenne_par_indice(all_steps_dfd),label = f"DFD {Djikstra.episode} episodes",errorbar='sd',err_style='band')
 
-sns.lineplot(x=moyenne_par_indice(all_backups_srfd), y=moyenne_par_indice(all_steps_srfd),label = f"LF {SR.episode} episodes",errorbar='sd',linestyle="--",err_style='band')
-
-#plt.plot(moyenne_par_indice(all_backups_lg), moyenne_par_indice(all_steps_lg), color='red', linewidth=2, label = f"LF {QueueDyna.episode} episodes")
-
-#plt.plot(moyenne_par_indice(all_backups_rd), moyenne_par_indice(all_steps_rd) ,color='blue', linewidth=2, label = f"RD {RDyna.episode} episodes")
-
-#plt.plot(moyenne_par_indice(all_backups_dfd), moyenne_par_indice(all_steps_dfd), color='green', linewidth=2, label = f"DFD {Djikstra.episode} episodes")
-
-#plt.plot(moyenne_par_indice(all_backups_srfd), moyenne_par_indice(all_steps_srfd), color='orange', linewidth=2, label = f"SRFC {SR.episode} episodes",linestyle="--")
+sns.lineplot(x=moyenne_par_indice(all_backups_srfd), y=moyenne_par_indice(all_steps_srfd),label = f"SRFD {SR.episode} episodes",errorbar='sd',linestyle="--",err_style='band')
 
 
 
