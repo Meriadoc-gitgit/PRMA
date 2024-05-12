@@ -91,6 +91,12 @@ for i in range(nb_exec):
 
 
 
+# Calcul de la variance
+var_lg = np.var(moyenne_par_indice(all_steps_lg))
+var_rd = np.var(moyenne_par_indice(all_steps_rd))
+var_dfd = np.var(moyenne_par_indice(all_steps_dfd))
+var_srfd = np.var(moyenne_par_indice(all_steps_srfd))
+
 
 # FIGURES
 plt.figure(figsize=(15,10))
@@ -105,7 +111,7 @@ plt.plot(moyenne_par_indice(all_backups_srfd), moyenne_par_indice(all_steps_srfd
 
 
 
-plt.text(0.2,0.5, f" $\epsilon$ : {config.main.epsilon}\n $\delta$ : {config.main.delta}\n α : {config.main.alpha}\n $\gamma$ : {config.main.gamma}\n max_step : {config.main.max_step}\n nb_episode : {config.main.nb_episode}\n labyrinthe : {laby}", fontsize =11)
+plt.text(0.2,0.5, f" $\epsilon$ : {config.main.epsilon}\n $\delta$ : {config.main.delta}\n α : {config.main.alpha}\n $\gamma$ : {config.main.gamma}\n max_step : {config.main.max_step}\n nb_episode : {config.main.nb_episode}\n labyrinthe : {laby}\n var_lg = {var_lg}\n var_rd = {var_rd}\n var_dfd = {var_dfd}\n var_srfd = {var_srfd}", fontsize =11)
 
 plt.title(f'Courbe du nombre de step to goal en fonction du nombre de backup moyenne sur {nb_exec} executions ')
 plt.xlabel('nb_backup')
