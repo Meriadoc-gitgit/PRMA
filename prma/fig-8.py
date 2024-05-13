@@ -82,7 +82,7 @@ for i in range(nb_exec):
 
     SR = SuccessorRepresentationFD(env, config.main.alpha,config.main.delta, 
                                     config.main.epsilon, config.sr.nb_episode,
-                                    config.main.max_step, config.sr.env9x6.train_episode_length, 
+                                    config.main.max_step, config.sr.env18x12.train_episode_length, 
                                     config.sr.env18x12.test_episode_length)
     SR.execute()
     data = pd.read_csv("executionInformation.csv")
