@@ -108,8 +108,6 @@ sns.lineplot(x=moyenne_par_indice(all_backups_dfd), y=moyenne_par_indice(all_ste
 
 sns.lineplot(x=moyenne_par_indice(all_backups_srfd), y=moyenne_par_indice(all_steps_srfd),label = f"SRFD {SR.episode} episodes",errorbar='sd',linestyle="--",err_style='band')
 
-
-
 #plt.text(0.2,0.5, f" $\epsilon$ : {config.main.epsilon}\n $\delta$ : {config.main.delta}\n α : {config.main.alpha}\n $\gamma$ : {config.main.gamma}\n max_step : {config.main.max_step}\n nb_episode : {config.main.nb_episode}\n labyrinthe : {laby}", fontsize =11)
 
 plt.title(f'Courbe du nombre de step to goal en fonction du nombre de backup moyenne sur {nb_exec} executions ')
@@ -121,3 +119,8 @@ plt.grid(True)
 plt.savefig(output_path)
 
 
+
+print("Variance LG :",np.var(moyenne_par_indice(all_steps_lg)))
+print("Variance RD :",np.var(moyenne_par_indice(all_steps_rd)))
+print("Variance DFD :",np.var(moyenne_par_indice(all_steps_dfd)))
+print("Variance SRFD :",np.var(moyenne_par_indice(all_steps_srfd)))
