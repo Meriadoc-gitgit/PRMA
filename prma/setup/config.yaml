@@ -1,6 +1,6 @@
 main : 
   render : False
-  epsilon : 0.5
+  epsilon : 0.1
   delta : 0.0001
   alpha : 0.5
   gamma : 0.95
