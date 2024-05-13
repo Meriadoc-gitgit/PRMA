@@ -13,13 +13,13 @@ sr :
   nb_episode : 50
 
   env9x6 : 
-    train_episode_length : 200
+    train_episode_length : 40
     test_episode_length : 20
   env18x12 : 
-    train_episode_length : 1000
+    train_episode_length : 200
     test_episode_length : 100
   env36x24 : 
-    train_episode_length : 5000
+    train_episode_length : 1000
     test_episode_length : 500
 
 test :
