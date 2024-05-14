@@ -74,8 +74,7 @@ class PrioritizedReplayAgent:
       state, _ = self.mdp.reset()                
 
       for j in range(self.max_step):
-        if self.nb_backup%10==0 and self.nb_backup!=0:
-          self.get_nb_step()
+        
         action, next_state, reward, terminated = self.step_in_world(state)
 
         for k in range(5):
@@ -117,7 +116,8 @@ class PrioritizedReplayAgent:
       self.q_table[state,action] = self.q_table[state,action] + self.alpha*(self.TD_error(state,action,next_state,reward))   #backup qu'à partir du moment où on a atteint le goal
       self.add_predecessors(state)
       self.nb_backup+=1
-      self.get_nb_step()
+      if self.nb_backup%10==0 and self.nb_backup!=0:
+        self.get_nb_step()
 
     
     self.fill_memory(experience, priority = priority) 

@@ -46,39 +46,39 @@ nb_exec = config.main.nb_execution
 
 # LOOP
 for i in range(nb_exec):
-    QueueDyna = LargestFirst(env, config.main.alpha, config.main.delta, 
-                             config.main.epsilon,config.main.max_step, 
-                             config.main.render, config.main.nb_episode)
-    QueueDyna.execute()
-    print(i)
-    data = pd.read_csv("executionInformation.csv")
+    # QueueDyna = LargestFirst(env, config.main.alpha, config.main.delta, 
+    #                          config.main.epsilon,config.main.max_step, 
+    #                          config.main.render, config.main.nb_episode)
+    # QueueDyna.execute()
+    # print(i)
+    # data = pd.read_csv("executionInformation.csv")
 
-    nb_steps = data.iloc[:, 1].tolist()
-    nb_backup = data.iloc[:,0].tolist()
-    all_steps_lg.append(nb_steps)
-    all_backups_lg.append(nb_backup)
+    # nb_steps = data.iloc[:, 1].tolist()
+    # nb_backup = data.iloc[:,0].tolist()
+    # all_steps_lg.append(nb_steps)
+    # all_backups_lg.append(nb_backup)
 
-    RDyna = RandomDyna(env, config.main.alpha, config.main.delta, 
-                       config.main.epsilon,config.main.max_step, config.main.render, 
-                       config.main.nb_episode)
-    RDyna.execute()
-    print(i)
-    data = pd.read_csv("executionInformation.csv")
-    nb_steps =data.iloc[:, 1].tolist()
-    nb_backup =data.iloc[:,0].tolist()
-    all_steps_rd.append(nb_steps)
-    all_backups_rd.append(nb_backup)
+    # RDyna = RandomDyna(env, config.main.alpha, config.main.delta, 
+    #                    config.main.epsilon,config.main.max_step, config.main.render, 
+    #                    config.main.nb_episode)
+    # RDyna.execute()
+    # print(i)
+    # data = pd.read_csv("executionInformation.csv")
+    # nb_steps =data.iloc[:, 1].tolist()
+    # nb_backup =data.iloc[:,0].tolist()
+    # all_steps_rd.append(nb_steps)
+    # all_backups_rd.append(nb_backup)
 
-    Djikstra = DjikstraFD(env, config.main.alpha, config.main.delta, 
-                            config.main.epsilon,config.main.max_step, 
-                            config.main.render, config.main.nb_episode)
-    Djikstra.execute()
-    data = pd.read_csv("executionInformation.csv")
-    print(i)
-    nb_steps = data.iloc[:, 1].tolist()
-    nb_backup = data.iloc[:,0].tolist()
-    all_steps_dfd.append(nb_steps)
-    all_backups_dfd.append(nb_backup)
+    # Djikstra = DjikstraFD(env, config.main.alpha, config.main.delta, 
+    #                         config.main.epsilon,config.main.max_step, 
+    #                         config.main.render, config.main.nb_episode)
+    # Djikstra.execute()
+    # data = pd.read_csv("executionInformation.csv")
+    # print(i)
+    # nb_steps = data.iloc[:, 1].tolist()
+    # nb_backup = data.iloc[:,0].tolist()
+    # all_steps_dfd.append(nb_steps)
+    # all_backups_dfd.append(nb_backup)
 
     SR = SuccessorRepresentationFD(env, config.main.alpha,config.main.delta, 
                                     config.main.epsilon,config.main.nb_episode,
