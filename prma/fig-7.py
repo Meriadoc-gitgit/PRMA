@@ -23,10 +23,13 @@ config = OmegaConf.load("setup/config.yaml")
 #Create result directory
 if not os.path.exists('res'):
     os.makedirs('res')
-output_path = 'res/figure-8-2.png'
+output_path = 'res/figure-7.png'
 
-env = setup_env_9x6()
-laby = "9x6"
+env = [setup_env_9x6(), setup_env_18x12(), setup_env_36x24()]
+
+terminal_states = [max(e.terminal_states) for e in env]
+
+laby = "all"
 
 #largest first
 all_steps_lg = []
@@ -49,48 +52,52 @@ all_backups_lg = []
 all_backups_rd = []
 all_backups_dfd = []
 all_backups_srfd = []
-for state_goal in range(1, env.mdp.nb_states) :   
+for i in range(len(env)) :   
+    e = env[i]
+    print(all_backups_lg)
+    print(all_backups_rd)
+    print(all_backups_dfd)
+    print(all_backups_srfd)
 
-    # DEFIN NUMBER OF STATES
-    env.mdp.terminal_states = [state_goal]
-
-    QueueDyna = LargestFirst(env, config.main.alpha, config.main.delta, 
+    QueueDyna = LargestFirst(e, config.main.alpha, config.main.delta, 
                              config.main.epsilon,config.main.max_step, 
                              config.main.render, config.main.nb_episode)
     QueueDyna.execute()
     data = pd.read_csv("executionInformation.csv")
 
-    nb_backup = data.iloc[:,0].tolist()
-    all_backups_lg.append(np.min(nb_backup))
-    print(state_goal,np.min(nb_backup))
+    nb_backup = data.iloc[:,0].tolist() 
+    nb_steps = data.iloc[:, 1].tolist()
+    all_backups_lg.append(nb_backup[np.argmin(nb_steps)])
+    print(i,nb_backup[np.argmin(nb_steps)],np.argmin(nb_steps))
+    
 
-    RDyna = RandomDyna(env, config.main.alpha, config.main.delta, 
+    RDyna = RandomDyna(e, config.main.alpha, config.main.delta, 
                        config.main.epsilon,config.main.max_step, config.main.render, 
                        config.main.nb_episode)
     RDyna.execute()
     data = pd.read_csv("executionInformation.csv")
     nb_backup =data.iloc[:,0].tolist()    
-    all_backups_rd.append(np.min(nb_backup))
-    print(state_goal,np.min(nb_backup))
+    all_backups_rd.append(nb_backup[np.argmin(nb_steps)])
+    print(i,nb_backup[np.argmin(nb_steps)],np.argmin(nb_steps))
 
-    Djikstra = DjikstraFD(env, config.main.alpha, config.main.delta, 
+    Djikstra = DjikstraFD(e, config.main.alpha, config.main.delta, 
                             config.main.epsilon,config.main.max_step, 
                             config.main.render, config.main.nb_episode)
     Djikstra.execute()
     data = pd.read_csv("executionInformation.csv")
     nb_backup =data.iloc[:,0].tolist()    
-    all_backups_dfd.append(np.min(nb_backup))
-    print(state_goal,np.min(nb_backup))
+    all_backups_dfd.append(nb_backup[np.argmin(nb_steps)])
+    print(i,nb_backup[np.argmin(nb_steps)],np.argmin(nb_steps))
 
-    SR = SuccessorRepresentationFD(env, config.main.alpha,config.main.delta, 
+    SR = SuccessorRepresentationFD(e, config.main.alpha,config.main.delta, 
                                     config.main.epsilon,config.main.nb_episode,
                                     config.main.max_step, config.sr.env18x12.train_episode_length, 
                                     config.sr.env18x12.test_episode_length)
     SR.execute()
     data = pd.read_csv("executionInformation.csv")
     nb_backup =data.iloc[:,0].tolist()    
-    all_backups_srfd.append(np.min(nb_backup))
-    print(state_goal,np.min(nb_backup))
+    all_backups_srfd.append(nb_backup[np.argmin(nb_steps)])
+    print(i,nb_backup[np.argmin(nb_steps)],np.argmin(nb_steps))
 
 
 
@@ -100,27 +107,19 @@ plt.figure(figsize=(15,10))
 
 sns.set_theme(style="whitegrid")
 
-sns.lineplot(x=all_backups_lg, y=range(env.mdp.unwrapped.nb_states),label = f"LF",errorbar='sd',err_style='band')
+sns.lineplot(x=terminal_states, y=all_backups_lg,label = f"LF",errorbar='sd',err_style='band')
 
-sns.lineplot(x=all_backups_rd, y=range(env.mdp.unwrapped.nb_states),label = f"RD",errorbar='sd',err_style='band')
+sns.lineplot(x=terminal_states, y=all_backups_rd,label = f"RD",errorbar='sd',err_style='band')
 
-sns.lineplot(x=all_backups_dfd, y=range(env.mdp.unwrapped.nb_states),label = f"DFD",errorbar='sd',err_style='band')
+sns.lineplot(x=terminal_states, y=all_backups_dfd,label = f"DFD",errorbar='sd',err_style='band')
 
-sns.lineplot(x=all_backups_srfd, y=range(env.mdp.unwrapped.nb_states),label = f"SRFD",errorbar='sd',linestyle="--",err_style='band')
+sns.lineplot(x=terminal_states, y=all_backups_srfd,label = f"SRFD",errorbar='sd',linestyle="--",err_style='band')
 
-#plt.text(0.2,0.5, f" $\epsilon$ : {config.main.epsilon}\n $\delta$ : {config.main.delta}\n α : {config.main.alpha}\n $\gamma$ : {config.main.gamma}\n max_step : {config.main.max_step}\n nb_episode : {config.main.nb_episode}\n labyrinthe : {laby}", fontsize =11)
 
 plt.title(f'Courbe du nombre de step to goal en fonction du nombre de backup moyenne sur {nb_exec} executions ')
-plt.xlabel('nb_backup')
-plt.ylabel('nb_step')
+plt.xlabel('No. States')
+plt.ylabel('No. Backups Until Optimal Solution')
 plt.xscale('log')
 plt.legend(loc='center')
 plt.grid(True)
 plt.savefig(output_path)
-
-
-
-print("Variance LG :",np.var(moyenne_par_indice(all_steps_lg)))
-print("Variance RD :",np.var(moyenne_par_indice(all_steps_rd)))
-print("Variance DFD :",np.var(moyenne_par_indice(all_steps_dfd)))
-print("Variance SRFD :",np.var(moyenne_par_indice(all_steps_srfd)))
