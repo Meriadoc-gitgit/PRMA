@@ -81,7 +81,7 @@ for i in range(nb_exec):
     all_backups_dfd.append(nb_backup)
 
     SR = SuccessorRepresentationFD(env, config.main.alpha,config.main.delta, 
-                                    config.main.epsilon, config.sr.nb_episode,
+                                    config.main.epsilon,config.main.nb_episode,
                                     config.main.max_step, config.sr.env18x12.train_episode_length, 
                                     config.sr.env18x12.test_episode_length)
     SR.execute()

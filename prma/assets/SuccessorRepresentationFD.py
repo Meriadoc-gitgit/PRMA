@@ -153,10 +153,8 @@ class SuccessorRepresentationFD(FocusedDyna) :
         Returns
         ----------      
     """
-    for i in range(self.episode) : 
-      # print(i)
-      self.train_phase()
-      self.test_phase()
+    self.train_phase()
+    self.test_phase()
 
   def optimal_path_length(self) : 
     """ Calculate the optimal path length
