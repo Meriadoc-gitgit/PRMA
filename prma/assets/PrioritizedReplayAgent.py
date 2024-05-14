@@ -12,8 +12,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from bbrl_gymnasium.envs.maze_mdp import MazeMDPEnv
 import gymnasium as gym
-from gymnasium.wrappers.monitoring.video_recorder import VideoRecorder
-from IPython.display import Video
 from mazemdp.toolbox import egreedy
 from mazemdp.mdp import Mdp as mdp
 from collections import defaultdict
@@ -70,15 +68,14 @@ class PrioritizedReplayAgent:
             model_name -- str : nom du modèle
         ----------
     """
-
+    self.get_nb_step()
  
     for i in range(self.episode): 
       state, _ = self.mdp.reset()                
-      if self.render:
-        self.mdp.unwrapped.draw_v_pi(self.q_table, self.q_table.argmax(axis=1), recorder=None)
-      
+
       for j in range(self.max_step):
-        # self.get_nb_step()
+        if self.nb_backup%10==0 and self.nb_backup!=0:
+          self.get_nb_step()
         action, next_state, reward, terminated = self.step_in_world(state)
 
         for k in range(5):

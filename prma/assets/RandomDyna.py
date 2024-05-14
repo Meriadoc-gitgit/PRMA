@@ -51,10 +51,7 @@ class RandomDyna(PrioritizedReplayAgent) :
 
     self.q_table[state,action] = self.q_table[state,action] + self.alpha*(self.TD_error(state,action,next_state,reward)) #backup qu'à partir du moment où on a atteint le goal
     self.nb_backup+=1
-    if self.nb_backup%1000==0:
-      self.get_nb_step()
 
-    
     self.memory.append([state,action,next_state,reward])
     
     return action, next_state, reward, terminated
