@@ -23,10 +23,10 @@ config = OmegaConf.load("setup/config.yaml")
 #Create result directory
 if not os.path.exists('res'):
     os.makedirs('res')
-output_path = 'res/figure-8.png'
+output_path = 'res/figure-8-2.png'
 
-env = setup_env_18x12()
-laby = "18x12"
+env = setup_env_36x24()
+laby = "36x24"
 
 #largest first
 all_steps_lg = []
