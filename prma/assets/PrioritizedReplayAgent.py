@@ -6,14 +6,8 @@ des sous classes : LargestFirst, FocusedDyna et RandomDyna
 """
 # Import necessary libraries
 
-from abc import abstractmethod
-# from moviepy.editor import ipython_display as video_display
 import numpy as np
-import matplotlib.pyplot as plt
-from bbrl_gymnasium.envs.maze_mdp import MazeMDPEnv
-import gymnasium as gym
 from mazemdp.toolbox import egreedy
-from mazemdp.mdp import Mdp as mdp
 from collections import defaultdict
 from heapq import heappop, heappush
 import csv
@@ -116,8 +110,7 @@ class PrioritizedReplayAgent:
       self.q_table[state,action] = self.q_table[state,action] + self.alpha*(self.TD_error(state,action,next_state,reward))   #backup qu'à partir du moment où on a atteint le goal
       self.add_predecessors(state)
       self.nb_backup+=1
-      if self.nb_backup%10==0 and self.nb_backup!=0:
-        self.get_nb_step()
+      self.get_nb_step()
 
     
     self.fill_memory(experience, priority = priority) 
@@ -164,7 +157,8 @@ class PrioritizedReplayAgent:
 
     if state_for_pred in self.experienced :
       pred = self.experienced[state_for_pred]
-      del self.experienced[state_for_pred]
+      # del self.experienced[state_for_pred]
+      self.experienced[state_for_pred] = set()
       for experience in pred:          #après avoir trouvé les predecesseurs repondant au critere on peut les ajouter a PQueue
         self.fill_memory(experience)
    

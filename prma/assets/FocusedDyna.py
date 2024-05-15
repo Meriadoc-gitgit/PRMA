@@ -6,10 +6,8 @@ Contient l'algorithme de Focused Dyna
 -------------------
 """
 
-from heapq import heappop, heappush
 from assets.PrioritizedReplayAgent import PrioritizedReplayAgent
 import numpy as np
-from mazemdp.toolbox import egreedy
 
 class FocusedDyna(PrioritizedReplayAgent) : 
     def __init__(self, mdp, alpha, delta, epsilon, max_step ,render, episode) :

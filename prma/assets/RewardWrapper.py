@@ -1,6 +1,5 @@
 import gymnasium as gym
-import numpy as np
-from mazemdp.toolbox import sample_categorical
+
 
 
 class RewardWrapper(gym.Wrapper):
