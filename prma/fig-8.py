@@ -8,7 +8,8 @@ from assets.DjikstraFD import DjikstraFD
 from assets.SuccessorRepresentationFD import SuccessorRepresentationFD
 
 from assets.maze import setup_env_36x24, setup_env_9x6, setup_env_18x12 
-from assets.utils import moyenne_par_indice            
+from assets.utils import moyenne_par_indice        
+from scipy.interpolate import interp1d       
 
 import os       
 from omegaconf import OmegaConf
@@ -44,7 +45,7 @@ nb_exec = config.main.nb_execution
 
 
 # LOOP
-for i in range(nb_exec):
+for i in range(1):
     QueueDyna = LargestFirst(env, config.main.alpha, config.main.delta, 
                              config.main.epsilon,config.main.max_step, 
                              config.main.render, config.main.nb_episode)
@@ -57,7 +58,7 @@ for i in range(nb_exec):
     all_steps_lg.append(nb_steps)
     all_backups_lg.append(nb_backup)
 
-    RDyna = RandomDyna(env, config.main.alpha, config.main.delta, 
+"""    RDyna = RandomDyna(env, config.main.alpha, config.main.delta, 
                        config.main.epsilon,config.main.max_step, config.main.render, 
                        config.main.nb_episode)
     RDyna.execute()
@@ -89,13 +90,13 @@ for i in range(nb_exec):
     nb_steps = data.iloc[:, 1].tolist()
     nb_backup = data.iloc[:,0].tolist()
     all_steps_srfd.append(nb_steps)
-    all_backups_srfd.append(nb_backup)
+    all_backups_srfd.append(nb_backup)"""
 
 
 
 
 # FIGURES
-plt.figure(figsize=(15,10))
+"""plt.figure(figsize=(15,10))
 
 sns.set_theme(style="whitegrid")
 
@@ -123,3 +124,4 @@ print("Variance LG :",np.var(moyenne_par_indice(all_steps_lg)))
 print("Variance RD :",np.var(moyenne_par_indice(all_steps_rd)))
 print("Variance DFD :",np.var(moyenne_par_indice(all_steps_dfd)))
 print("Variance SRFD :",np.var(moyenne_par_indice(all_steps_srfd)))
+"""

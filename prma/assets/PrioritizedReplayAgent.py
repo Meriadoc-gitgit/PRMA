@@ -12,6 +12,9 @@ from collections import defaultdict
 from heapq import heappop, heappush
 import csv
 import os
+from bbrl_gymnasium.envs.maze_mdp import MazeMDPEnv
+import gymnasium as gym
+from gymnasium.wrappers.monitoring.video_recorder import VideoRecorder
 
 """==============================================================================================================="""
 
@@ -67,10 +70,10 @@ class PrioritizedReplayAgent:
     for i in range(self.episode): 
       state, _ = self.mdp.reset()                
 
+      self.mdp.unwrapped.draw_v_pi(self.q_table, self.q_table.argmax(axis=1), recorder=None)
       for j in range(self.max_step):
         
         action, next_state, reward, terminated = self.step_in_world(state)
-
         for k in range(5):
           if not self.memory:
             break
