@@ -23,10 +23,10 @@ config = OmegaConf.load("setup/config.yaml")
 #Create result directory
 if not os.path.exists('res'):
     os.makedirs('res')
-output_path = 'res/figure-8-2.png'
+output_path = 'res/out.png'
 
-env = setup_env_36x24()
-laby = "36x24"
+env = setup_env_18x12()
+laby = "18x12"
 
 #largest first
 all_steps_lg = []
@@ -48,7 +48,7 @@ nb_exec = config.main.nb_execution
 for i in range(1):
     QueueDyna = LargestFirst(env, config.main.alpha, config.main.delta, 
                              config.main.epsilon,config.main.max_step, 
-                             config.main.render, config.main.nb_episode)
+                             True, config.main.nb_episode,video_name="QD")
     QueueDyna.execute()
     print(i)
     data = pd.read_csv("executionInformation.csv")
@@ -58,9 +58,9 @@ for i in range(1):
     all_steps_lg.append(nb_steps)
     all_backups_lg.append(nb_backup)
 
-"""    RDyna = RandomDyna(env, config.main.alpha, config.main.delta, 
+    RDyna = RandomDyna(env, config.main.alpha, config.main.delta, 
                        config.main.epsilon,config.main.max_step, config.main.render, 
-                       config.main.nb_episode)
+                       config.main.nb_episode,video_name="RD")
     RDyna.execute()
     print(i)
     data = pd.read_csv("executionInformation.csv")
@@ -71,7 +71,7 @@ for i in range(1):
 
     Djikstra = DjikstraFD(env, config.main.alpha, config.main.delta, 
                             config.main.epsilon,config.main.max_step, 
-                            config.main.render, config.main.nb_episode)
+                            config.main.render, config.main.nb_episode,video_name="DFD")
     Djikstra.execute()
     data = pd.read_csv("executionInformation.csv")
     print(i)
@@ -83,20 +83,20 @@ for i in range(1):
     SR = SuccessorRepresentationFD(env, config.main.alpha,config.main.delta, 
                                     config.main.epsilon,config.main.nb_episode,
                                     config.main.max_step, config.sr.env18x12.train_episode_length, 
-                                    config.sr.env18x12.test_episode_length)
+                                    config.sr.env18x12.test_episode_length,video_name="SRFD")
     SR.execute()
     data = pd.read_csv("executionInformation.csv")
     print(i)
     nb_steps = data.iloc[:, 1].tolist()
     nb_backup = data.iloc[:,0].tolist()
     all_steps_srfd.append(nb_steps)
-    all_backups_srfd.append(nb_backup)"""
+    all_backups_srfd.append(nb_backup)
 
 
 
 
 # FIGURES
-"""plt.figure(figsize=(15,10))
+plt.figure(figsize=(15,10))
 
 sns.set_theme(style="whitegrid")
 
@@ -116,7 +116,10 @@ plt.ylabel('nb_step')
 plt.xscale('log')
 plt.legend(loc='center')
 plt.grid(True)
-plt.savefig(output_path)
+
+plt.show()
+
+#plt.savefig(output_path)
 
 
 
@@ -124,4 +127,3 @@ print("Variance LG :",np.var(moyenne_par_indice(all_steps_lg)))
 print("Variance RD :",np.var(moyenne_par_indice(all_steps_rd)))
 print("Variance DFD :",np.var(moyenne_par_indice(all_steps_dfd)))
 print("Variance SRFD :",np.var(moyenne_par_indice(all_steps_srfd)))
-"""

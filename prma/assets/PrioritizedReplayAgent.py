@@ -19,7 +19,7 @@ from gymnasium.wrappers.monitoring.video_recorder import VideoRecorder
 """==============================================================================================================="""
 
 class PrioritizedReplayAgent:
-  def __init__(self, mdp, alpha, delta, epsilon, max_step ,render, episode) :
+  def __init__(self, mdp, alpha, delta, epsilon, max_step ,render, episode, video_name) :
     """ Initialisation de la classe PrioritizedReplayAgent
         Arguments
         ----------
@@ -35,6 +35,7 @@ class PrioritizedReplayAgent:
     """
     self.mdp = mdp
     self.render = render
+    self.video_name = video_name
     self.episode = episode
     self.q_table = np.zeros((mdp.unwrapped.nb_states, mdp.action_space.n))   # Q-Table nombre de state x nombre d'action
     self.memory = []  #memoire contient un tri des experiences vecues
@@ -66,11 +67,19 @@ class PrioritizedReplayAgent:
         ----------
     """
     self.get_nb_step()
+
+    if self.render:
+      video_recorder = VideoRecorder(self.mdp, "videos/"+self.video_name+".mp4", enabled=self.render)
+      self.mdp.init_draw("Temporal differences", recorder=video_recorder)
  
     for i in range(self.episode): 
+      print(i)        # to track the process
       state, _ = self.mdp.reset()                
 
-      self.mdp.unwrapped.draw_v_pi(self.q_table, self.q_table.argmax(axis=1), recorder=None)
+      self.mdp.unwrapped.draw_v_pi(self.q_table, self.q_table.argmax(axis=1), recorder=video_recorder)
+
+      self.mdp.render()
+
       for j in range(self.max_step):
         
         action, next_state, reward, terminated = self.step_in_world(state)
@@ -83,6 +92,11 @@ class PrioritizedReplayAgent:
           break 
         
         state=next_state                     #l'agent est maintenant à l'etat qui succède x
+    if self.render:
+      print("finish")
+      self.mdp.current_state = 0
+      self.mdp.unwrapped.draw_v_pi(self.q_table, self.q_table.argmax(axis=1), recorder=video_recorder)
+      video_recorder.close()
 
       
 
