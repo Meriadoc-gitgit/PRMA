@@ -11,12 +11,13 @@ config = OmegaConf.load("setup/config.yaml")
 def setup_env_9x6():
     env_9x6 = gym.make("MazeMDP-v0", kwargs={"width": 9, "height": 6,"start_states": [2],"walls": [13, 14, 15, 34, 42, 43, 44],
                         "terminal_states": [41]}, render_mode="rgb_array", gamma= config.main.gamma)
+    env_9x6.unwrapped.terminal_states = [41]
     env_9x6.metadata['render_fps'] = 1
     env_9x6 = RewardWrapper(env_9x6)
 
     env_9x6.reset()
 
-    env_9x6.unwrapped.set_no_agent()
+    env_9x6.set_no_agent()
 
     return env_9x6
 
@@ -24,6 +25,7 @@ def setup_env_18x12() :
     env_18x12 = gym.make("MazeMDP-v0", kwargs={"width": 18, "height": 12,
     "start_states": [4], "walls": [50,51,52,53,54,62,63,64,65,66, 128,129,140,141,168,169,170,171,172,173,180,181,182,183,184,185],
     "terminal_states": [166,167,178,179]}, render_mode="rgb_array", gamma= config.main.gamma)
+    env_9x6.unwrapped.terminal_states = [166,167,178,179]
 
     env_18x12.metadata['render_fps'] = 1
     env_18x12 = RewardWrapper(env_18x12)
@@ -53,6 +55,10 @@ def setup_env_36x24() :
                         ,704,705,706,707
                         ,728,729,730,731]},
     render_mode="rgb_array", gamma=config.main.gamma)
+    env_9x6.unwrapped.terminal_states = [656,657,658,659
+                                        ,680,681,682,683
+                                        ,704,705,706,707
+                                        ,728,729,730,731]
 
     env_36x24.metadata['render_fps'] = 1
     env_36x24 = RewardWrapper(env_36x24)

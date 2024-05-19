@@ -15,6 +15,7 @@ import os
 from bbrl_gymnasium.envs.maze_mdp import MazeMDPEnv
 import gymnasium as gym
 from gymnasium.wrappers.monitoring.video_recorder import VideoRecorder
+import matplotlib.pyplot as plt
 
 """==============================================================================================================="""
 
@@ -56,6 +57,7 @@ class PrioritizedReplayAgent:
       with open("executionInformation.csv", 'w') as file:
         writer = csv.writer(file)
         writer.writerow([0,self.max_step])
+
     
 
   """================== Excecution =================="""  
@@ -69,19 +71,18 @@ class PrioritizedReplayAgent:
     self.get_nb_step()
 
     if self.render:
-      video_recorder = VideoRecorder(self.mdp, "videos/"+self.video_name+".mp4", enabled=self.render)
-      self.mdp.init_draw("Temporal differences", recorder=video_recorder)
+      video_recorder = VideoRecorder(self.mdp.unwrapped, "videos/"+self.video_name+".mp4", enabled=self.render)
+      self.mdp.unwrapped.init_draw("Temporal differences", recorder=video_recorder)
+      plt.show()
  
     for i in range(self.episode): 
       print(i)        # to track the process
-      state, _ = self.mdp.reset()                
+      state, _ = self.mdp.reset()            
 
       self.mdp.unwrapped.draw_v_pi(self.q_table, self.q_table.argmax(axis=1), recorder=video_recorder)
-
-      self.mdp.render()
+      self.mdp.unwrapped.render()
 
       for j in range(self.max_step):
-        
         action, next_state, reward, terminated = self.step_in_world(state)
         for k in range(5):
           if not self.memory:
@@ -89,9 +90,11 @@ class PrioritizedReplayAgent:
           self.update_memory()
    
         if state in self.mdp.unwrapped.terminal_states:
+          print(self.mdp.terminal_states)
+          print(self.mdp.unwrapped.terminal_states)
           break 
         
-        state=next_state                     #l'agent est maintenant à l'etat qui succède x
+        state = next_state                     #l'agent est maintenant à l'etat qui succède x
     if self.render:
       print("finish")
       self.mdp.current_state = 0

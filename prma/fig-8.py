@@ -25,7 +25,7 @@ if not os.path.exists('res'):
     os.makedirs('res')
 output_path = 'res/out.png'
 
-env = setup_env_18x12()
+env = setup_env_9x6()
 laby = "18x12"
 
 #largest first
@@ -57,6 +57,7 @@ for i in range(1):
     nb_backup = data.iloc[:,0].tolist()
     all_steps_lg.append(nb_steps)
     all_backups_lg.append(nb_backup)
+    break
 
     RDyna = RandomDyna(env, config.main.alpha, config.main.delta, 
                        config.main.epsilon,config.main.max_step, config.main.render, 
@@ -64,7 +65,7 @@ for i in range(1):
     RDyna.execute()
     print(i)
     data = pd.read_csv("executionInformation.csv")
-    nb_steps =data.iloc[:, 1].tolist()
+    nb_steps = data.iloc[:, 1].tolist()
     nb_backup =data.iloc[:,0].tolist()
     all_steps_rd.append(nb_steps)
     all_backups_rd.append(nb_backup)
