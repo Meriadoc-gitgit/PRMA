@@ -72,9 +72,7 @@ class PrioritizedReplayAgent:
 
     if self.render:
       video_recorder = VideoRecorder(self.mdp.unwrapped, "videos/"+self.video_name+".mp4", enabled=self.render)
-      self.mdp.unwrapped.init_draw("Temporal differences", recorder=video_recorder)
-      plt.show()
- 
+
     for i in range(self.episode): 
       print(i)        # to track the process
       state, _ = self.mdp.reset()            
