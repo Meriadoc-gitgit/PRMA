@@ -107,7 +107,6 @@ class SuccessorRepresentationFD(FocusedDyna) :
         ----------      
     """
     state, _ = self.mdp.reset()
-    episodic_error = []
 
     for i in range(self.train_episode_length) : 
       action = self.sample_action(state) 
@@ -116,14 +115,11 @@ class SuccessorRepresentationFD(FocusedDyna) :
       state = next_state
       if i > 1 : 
         td_sr = self.update_sr(self.experiences[-2],self.experiences[-1])
-        episodic_error.append(np.mean(np.abs(td_sr)))
 
       if terminated : 
         td_sr = self.update_sr(self.experiences[-1], self.experiences[-1])
-        episodic_error.append(np.mean(np.abs(td_sr)))
         break
       
-    #self.lifetime_td_errors.append(np.mean(episodic_error))
 
   def test_phase(self) : 
     """ Phase de test
