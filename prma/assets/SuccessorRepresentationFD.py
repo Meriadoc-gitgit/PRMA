@@ -94,7 +94,6 @@ class SuccessorRepresentationFD(FocusedDyna) :
     else : 
       td_error = I + self.mdp.unwrapped.gamma * self.M[next_action,next_state] - self.M[action,state]
     self.M[action,state] += self.alpha * td_error 
-    return td_error
 
 
   def train_phase(self) : 
@@ -114,10 +113,10 @@ class SuccessorRepresentationFD(FocusedDyna) :
       self.experiences.append([state, action, next_state, reward, terminated])
       state = next_state
       if i > 1 : 
-        td_sr = self.update_sr(self.experiences[-2],self.experiences[-1])
+        self.update_sr(self.experiences[-2],self.experiences[-1])
 
       if terminated : 
-        td_sr = self.update_sr(self.experiences[-1], self.experiences[-1])
+        self.update_sr(self.experiences[-1], self.experiences[-1])
         break
       
 
